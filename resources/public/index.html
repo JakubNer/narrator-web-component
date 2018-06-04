@@ -1,0 +1,73 @@
+  <html>
+    <style>
+        #screen {
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            overflow: none;
+            margin: 0 auto;
+            resize: both;
+        }
+
+        #left {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 0%;
+            top: 0%;
+            margin: 2%;
+            height: 92%;
+            width: 46%;
+        }
+
+        #right {
+            position: absolute;
+            left: 50%;
+            top: 0%;
+            margin: 2%;
+            height: 92%;
+            width: 46%;
+        }
+    </style>
+    <body>
+        <script src="js/narrator.js"></script>
+        <script>kundel.narrator.register()</script>
+        <div id="screen">
+            <div id="left">
+                <h1 id="feedback"></h1>
+            </div>
+            <div id="right">
+                <div id="narrator"></div>
+            </div>
+        </div>
+        <script>
+            var narrator = document.getElementById('narrator');
+
+            // List of lists.  Each record is a pair (list) of page titles and event strings.
+            // Number of pairs is the number of pages.
+            my_sections = [{"flows":[{"html":"",
+                                      "seconds":0,
+                                      "id":""}],
+                            "subsections":[{"flows":[]}]}]
+
+            narrator.setAttribute("sections", JSON.stringify(my_sections));
+            narrator.setAttribute("font-size-min--section", "1vmin");
+            narrator.setAttribute("font-size-max--section", "3vmin");
+            kundel.narrator.changed(narrator, "trigger", null, new Date().getTime());
+
+            kundel.narrator.created(narrator);
+
+            console.log("catching on :: " + narrator);
+            // should be the event string from my_pages configuration.
+            narrator.addEventListener('timeline', function(e) {
+                console.log("narrator timeline 'id': ", e.id);
+                console.log("narrator timeline 'playing': ", e.playing);
+                document.getElementById('feedback').innerHTML = 'id:' + e.id + ' playing:' + e.playing;
+            }, true);
+        </script>
+    </body>
+</html>
