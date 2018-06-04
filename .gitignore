@@ -6,3 +6,4 @@ figwheel_server.log
 reagent-template.iml
 pom.xml
 out/
+clojurescript-w3c-custom-element.iml
