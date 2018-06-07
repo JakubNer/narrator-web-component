@@ -28,6 +28,7 @@
 ;;
 ;; Modify these to suite your element:
 (def attrs {"sections" (r/atom nil)
+            "paused" (r/atom nil)
             "trigger" (r/atom nil) ;; just change this in some fashion to trigger, update as timestamp?
             "font-size-min--section" (r/atom nil)
             "font-size-max--section" (r/atom nil)})
@@ -40,6 +41,7 @@
 ;;    #(= "true" %2)        ;; parses boolean
 ;; This list's keys must match the 'attrs' list.
 (def fns {"sections" #(js->clj (.parse js/JSON %2) :keywordize-keys true)
+          "paused" #(= "true" %2)
           "trigger" #(identity true)
           "font-size-min--section" #(do %2)
           "font-size-max--section" #(do %2)})

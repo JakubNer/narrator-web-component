@@ -214,6 +214,7 @@
             }, true);
 
             narrator.setAttribute("sections", JSON.stringify(my_sections));
+            narrator.setAttribute("paused", "true");
             narrator.setAttribute("font-size-min--section", "1vmin");
             narrator.setAttribute("font-size-max--section", "3vmin");
             kundel.narrator.changed(narrator, "trigger", null, new Date().getTime());

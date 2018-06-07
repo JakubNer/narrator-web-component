@@ -127,3 +127,8 @@ In the REPL source the test runner and run the tests:
     (require '[kundel.runner :as t] :reload)
     (t/run)
 ```
+
+## Credits
+
+Icons by Daniele De Santis
+https://www.flaticon.com/packs/music

@@ -2,6 +2,7 @@
   (:require
     [reagent.core :as r]
     [debux.cs.core :refer-macros [clog dbg break]]
+    [dommy.core :as dom]
     [kundel.css :as css]))
 
 (def this (r/atom nil))
@@ -131,22 +132,38 @@
 
 (defn pause []
   (stop-playing)
-  (fire-event (:id (:flow @current))))
+  (fire-event (:id (:flow @current)))
+  (let [image-element (dom/sel1 :#narrator-sections-center-overlay)]
+    (dom/remove-class! image-element :narrator-sections-center-play)
+    (dom/add-class! image-element :narrator-sections-center-pause)
+    (dom/set-style! image-element :opacity ".5")
+    (js/setTimeout #(dom/set-style! image-element :opacity "0") 500)))
 
 (defn play []
   (start-playing)
-  (fire-event (:id (:flow @current))))
+  (fire-event (:id (:flow @current)))
+  (let [image-element (dom/sel1 :#narrator-sections-center-overlay)]
+    (dom/remove-class! image-element :narrator-sections-center-pause)
+    (dom/add-class! image-element :narrator-sections-center-play)
+    (dom/set-style! image-element :opacity ".5")
+    (js/setTimeout #(dom/set-style! image-element :opacity "0") 500)))
 
+(defn clicked-flow [flow]
+  (let [keyframe (get-narration-keyframe @narration flow)]
+    (if (not= keyframe @keyframe)
+      (pause)
+      (if (playing?)
+        (pause)
+        (play)))
+    (set-keyframe keyframe)))
 ;;
 ;; Rendered components
 ;;
 
 (defn timeline-render [sections]
-  [:div.narrator {:style {:height "100%"
-                          :width "100%"
-                          :display "flex"
-                          :flex-direction "column"
-                          :justify-content "space-evenly"}}
+  [:div.narrator-sections
+   [:div.narrator-sections-center
+    [:div#narrator-sections-center-overlay]]
    (doall
      (for [section sections]
        [:div.narrator-section {:key   (gensym "n-sct-")
@@ -155,18 +172,23 @@
           (for [flow (:flows section)]
             [:span.narrator-flow {:key (gensym "n-sct-fl-")
                                   :id (get-element-id flow)
-                                  :dangerouslySetInnerHTML #js{:__html (:html flow)}}]))]))])
+                                  :dangerouslySetInnerHTML #js{:__html (:html flow)}
+                                  :on-click #(clicked-flow flow)}]))]))])
 
 (defn render [_this attrs]
   (let [sections @(get attrs "sections")
+        paused  @(get attrs "paused")
         font-min @(get attrs "font-size-min--section")
-        font-max @(get attrs "font-size-max--section")]
+        font-max @(get attrs "font-size-max--section")
+        triggered @(get attrs "trigger")] ;; whenever triggered, make divs not visible, and animate visible after 500ms]
     (reset! this _this)
     (reset! narration (get-narration sections))
-    (when @(get attrs "trigger") ;; whenever triggered, make divs not visible, and animate visible after 500ms
-      (reset! (get attrs "trigger") false)
-      (set-keyframe 8)
-      (play))
+    (if triggered
+      (do
+        (reset! (get attrs "trigger") false)
+        (set-keyframe 8)
+        (js/setTimeout #(when (not paused) (play)) 1000))
+      (if paused (when (playing?) (pause)) (when (not (playing?)) (play))))
     [:div
      [:style (css/get-styles font-min font-max)]
      (timeline-render sections)]))
