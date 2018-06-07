@@ -54,6 +54,10 @@ While a section is being narrated all other sections are rendered at minimal fon
 
 Wile a subsection is being narrated both the section and sub-section are rendered at maximum font-size.
 
+#### paused
+
+Control trick play, "true" if narration should be paused, "false" if should be playing.
+
 #### trigger
 
 Change the value of the trigger attribute to restart the narration.

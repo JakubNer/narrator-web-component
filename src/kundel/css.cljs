@@ -52,6 +52,7 @@
     -moz-transition: font-size .5s ease-in-out;
     -o-transition: font-size .5s ease-in-out;
     transition: font-size .5s ease-in-out;
+    cursor: pointer;
   }
 
   .narrator-section.narrator-current {
@@ -60,6 +61,10 @@
 
   .narrator-section:not(.narrator-current) {
     font-size: " font-min ";
+  }
+
+  .narrator-flow.narrator-current {
+    font-weight: bold;
   }
 
   "))

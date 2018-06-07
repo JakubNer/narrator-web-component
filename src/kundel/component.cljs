@@ -6,6 +6,7 @@
     [kundel.css :as css]))
 
 (def this (r/atom nil))
+(def previous-paused-attribute (r/atom nil))
 
 ;;
 ;; narration / timeline variables and utilities
@@ -48,16 +49,16 @@
 (defn find-subsection-js-for-flow-js [flow-js-element]
   "Find a JS element that's a parent of 'flow-js-element' with .narrator-subsection "
   (when flow-js-element
-    (when-let [parent (.-parentElement flow-js-element)]
-      (if (.contains (.-classList parent) "narrator-subsection")
+    (when-let [parent (dom/parent flow-js-element)]
+      (if (dom/has-class? parent "narrator-subsection")
         parent
         (find-subsection-js-for-flow-js parent)))))
 
 (defn find-section-js-for-flow-js [flow-js-element]
   "Find a JS element that's a parent of 'flow-js-element' with .narrator-section "
   (when flow-js-element
-    (when-let [parent (.-parentElement flow-js-element)]
-      (if (.contains (.-classList parent) "narrator-section")
+    (when-let [parent (dom/parent flow-js-element)]
+      (if (dom/has-class? parent "narrator-section")
         parent
         (find-subsection-js-for-flow-js parent)))))
 
@@ -65,22 +66,26 @@
   "go through all IDs and animate as required"
   (doseq [rec @narration
           :let [flow (:flow rec)
-                flow-js-element (.getElementById js/document (get-element-id flow))
+                flow-js-element (dom/sel1 (str "#"(get-element-id flow)))
                 subsection (:subsection rec)
                 section (:section rec)]
+          :when flow-js-element
           :when (not= rec @current)]
+    (dom/remove-class! flow-js-element "narrator-current")
     (when subsection
       (when-let [subsection-js-element (find-subsection-js-for-flow-js flow-js-element)]
-        (.remove (.-classList subsection-js-element) "narrator-current")))
+        (dom/remove-class! subsection-js-element "narrator-current")))
     (when section
       (when-let [section-js-element (find-section-js-for-flow-js flow-js-element)]
-        (.remove (.-classList section-js-element) "narrator-current"))))
+        (dom/remove-class! section-js-element "narrator-current"))))
   (let [current-flow (:flow @current)
-        current-flow-js-element (.getElementById js/document (get-element-id current-flow))]
-    (when-let [subsection-js-element (find-subsection-js-for-flow-js current-flow-js-element)]
-      (.add (.-classList subsection-js-element) "narrator-current"))
-    (when-let [section-js-element (find-section-js-for-flow-js current-flow-js-element)]
-      (.add (.-classList section-js-element) "narrator-current"))))
+        current-flow-js-element (dom/sel1 (str "#" (get-element-id current-flow)))]
+    (when current-flow-js-element
+      (dom/add-class! current-flow-js-element "narrator-current")
+      (when-let [subsection-js-element (find-subsection-js-for-flow-js current-flow-js-element)]
+        (dom/add-class! subsection-js-element "narrator-current"))
+      (when-let [section-js-element (find-section-js-for-flow-js current-flow-js-element)]
+        (dom/add-class! section-js-element "narrator-current")))))
 
 (defn playing? []
   (not (nil? @timeout)))
@@ -149,13 +154,13 @@
     (js/setTimeout #(dom/set-style! image-element :opacity "0") 500)))
 
 (defn clicked-flow [flow]
-  (let [keyframe (get-narration-keyframe @narration flow)]
-    (if (not= keyframe @keyframe)
+  (let [keyframe_of_flow (get-narration-keyframe @narration flow)]
+    (if (not= keyframe_of_flow @keyframe)
       (pause)
       (if (playing?)
         (pause)
         (play)))
-    (set-keyframe keyframe)))
+    (set-keyframe keyframe_of_flow)))
 ;;
 ;; Rendered components
 ;;
@@ -178,6 +183,7 @@
 (defn render [_this attrs]
   (let [sections @(get attrs "sections")
         paused  @(get attrs "paused")
+        previous-paused @previous-paused-attribute
         font-min @(get attrs "font-size-min--section")
         font-max @(get attrs "font-size-max--section")
         triggered @(get attrs "trigger")] ;; whenever triggered, make divs not visible, and animate visible after 500ms]
@@ -186,9 +192,12 @@
     (if triggered
       (do
         (reset! (get attrs "trigger") false)
-        (set-keyframe 8)
-        (js/setTimeout #(when (not paused) (play)) 1000))
-      (if paused (when (playing?) (pause)) (when (not (playing?)) (play))))
+        (js/setTimeout #(do
+                          (set-keyframe 0)
+                          (when (not paused) (play)) 1000)))
+      (when (not= paused previous-paused)
+        (if paused (when (playing?) (pause)) (when (not (playing?)) (play)))
+        (reset! previous-paused-attribute paused)))
     [:div
      [:style (css/get-styles font-min font-max)]
      (timeline-render sections)]))
