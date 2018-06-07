@@ -39,7 +39,7 @@
 ;;    #(.parse js/JSON %2)  ;; parses JSON into JS object
 ;;    #(= "true" %2)        ;; parses boolean
 ;; This list's keys must match the 'attrs' list.
-(def fns {"sections" #(js->clj (.parse js/JSON %2))
+(def fns {"sections" #(js->clj (.parse js/JSON %2) :keywordize-keys true)
           "trigger" #(identity true)
           "font-size-min--section" #(do %2)
           "font-size-max--section" #(do %2)})

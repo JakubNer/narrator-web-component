@@ -49,17 +49,161 @@
 
             // List of lists.  Each record is a pair (list) of page titles and event strings.
             // Number of pairs is the number of pages.
-            my_sections = [{"flows":[{"html":"",
-                                      "seconds":0,
-                                      "id":""}],
-                            "subsections":[{"flows":[]}]}]
-
-            narrator.setAttribute("sections", JSON.stringify(my_sections));
-            narrator.setAttribute("font-size-min--section", "1vmin");
-            narrator.setAttribute("font-size-max--section", "3vmin");
-            kundel.narrator.changed(narrator, "trigger", null, new Date().getTime());
-
-            kundel.narrator.created(narrator);
+            my_sections =
+                [
+                   {
+                      "flows":[
+                         {
+                            "html":"Etiam in <u>ante</u> <span style='color: red;'>vitae massa</span> faucibus eleifend. Maecenas nisi felis, pharetra ut nibh eget, fringilla mattis turpis. Nullam condimentum malesuada libero, eget suscipit ipsum malesuada fringilla. Nulla ut arcu vitae nisl tincidunt semper. Morbi auctor ipsum sit amet arcu facilisis hendrerit. Donec sodales auctor nisi sed mollis. Proin congue egestas dui non mollis.",
+                            "seconds":3,
+                            "id":"etiam"
+                         },
+                         {
+                            "html":"Duis scelerisque nulla eget enim dignissim pretium.",
+                            "seconds":2,
+                            "id":"duis"
+                         },
+                         {
+                            "html":"Aenean non ex at <a href='www.google.com'>nisi</a> scelerisque interdum.",
+                            "seconds":2,
+                            "id":"aenean"
+                         }
+                      ],
+                      "subsections":[
+                         {
+                            "flows":[
+                               {
+                                  "html":"Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
+                                  "seconds":2,
+                                  "id":"pellentesque"
+                               },
+                               {
+                                  "html":"Curabitur faucibus malesuada neque, nec sollicitudin urna dignissim eu.",
+                                  "seconds":2,
+                                  "id":"curabitur"
+                               },
+                               {
+                                  "html":"Cras sodales <i>lectus</i> <u>commodo</u> <a href='www.google.com'>elit</a> euismod dictum.",
+                                  "seconds":2,
+                                  "id":"cras"
+                               }
+                            ]
+                         },
+                         {
+                            "flows":[
+                               {
+                                  "html":"Quisque mollis lacinia porta. Cras et pharetra ante. Praesent in neque sed ante molestie volutpat id laoreet erat. In consectetur pellentesque dui id varius. Sed varius, neque et ultricies tempus, augue mi dictum nibh, in scelerisque ligula urna vitae libero.",
+                                  "seconds":2,
+                                  "id":"quisque"
+                               }
+                            ]
+                         },
+                         {
+                            "flows":[
+                               {
+                                  "html":"Sed nec ex fermentum magna bibendum sodales. Aliquam a tincidunt ex, non iaculis ex. Praesent est dolor, vestibulum sed aliquet sit amet, suscipit nec augue. Nunc sit amet dui lorem. Sed nec ornare dolor. Mauris consequat condimentum laoreet. Aenean tellus nibh, consequat vel enim eget, aliquam placerat est.",
+                                  "seconds":2,
+                                  "id":"sed"
+                               }
+                            ]
+                         }
+                      ]
+                   },
+                   {
+                      "flows":[
+                         {
+                            "html":"Nam ut elementum libero. Aliquam aliquet vehicula cursus. Suspendisse id mauris quis leo scelerisque pharetra sed non orci. Vivamus pharetra, felis eget ultricies consectetur, sem est aliquet ipsum, placerat auctor nisi orci id turpis. Integer vestibulum ligula at tristique dignissim. Curabitur hendrerit, turpis id gravida pulvinar, ipsum felis ultricies est, quis efficitur enim risus ac arcu. Maecenas dapibus in ante nec viverra. Ut ac massa vitae diam dignissim blandit.",
+                            "seconds":3,
+                            "id":"nam"
+                         }
+                      ]
+                   },
+                   {
+                      "flows":[
+                         {
+                            "html":"Maecenas faucibus accumsan nibh, vitae laoreet ligula mattis a.",
+                            "seconds":3,
+                            "id":"maecenas"
+                         }
+                      ]
+                   },
+                   {
+                      "flows":[
+                         {
+                            "html":"Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
+                            "seconds":3,
+                            "id":"Vestibulum"
+                         },
+                         {
+                            "html":"Vivamus vulputate gravida turpis sit amet imperdiet. Nullam ultricies ante ac libero feugiat eleifend.",
+                            "seconds":2,
+                            "id":"Vivamus"
+                         },
+                         {
+                            "html":"Nulla facilisi. Integer hendrerit tortor mi, varius eleifend ipsum molestie quis.",
+                            "seconds":2,
+                            "id":"nulla"
+                         }
+                      ],
+                      "subsections":[
+                         {
+                            "flows":[
+                               {
+                                  "html":"Nunc lectus nibh, commodo eu lorem nec, viverra convallis nisi.",
+                                  "seconds":2,
+                                  "id":"nunc"
+                               },
+                               {
+                                  "html":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae bibendum odio. Ut cursus et mauris ut dignissim. Donec tempor dapibus neque, sit amet fringilla lorem faucibus in. In hac habitasse platea dictumst. Sed eget laoreet leo. Donec aliquam feugiat sapien, ut ultrices velit elementum sit amet. Praesent ligula enim",
+                                  "seconds":2,
+                                  "id":"lorem"
+                               },
+                               {
+                                  "html":"Proin sodales pharetra tellus, eget rutrum lorem semper et. Curabitur eget ex id nisl gravida auctor. Phasellus bibendum vestibulum velit, et iaculis nunc aliquam cursus.",
+                                  "seconds":2,
+                                  "id":"proin"
+                               }
+                            ]
+                         },
+                         {
+                            "flows":[
+                               {
+                                  "html":"In hac habitasse platea dictumst. Proin convallis, tellus sed sollicitudin dictum, leo neque lacinia est, sed ultricies est libero ut sem. In justo enim, imperdiet sed blandit at, sagittis sit amet tellus. Praesent aliquet lorem ac urna laoreet sagittis. Praesent scelerisque dui non gravida condimentum. Integer ut placerat leo.",
+                                  "seconds":2,
+                                  "id":"in"
+                               }
+                            ]
+                         },
+                         {
+                            "flows":[
+                               {
+                                  "html":"Curabitur dignissim libero in diam mollis, in bibendum diam fermentum. ",
+                                  "seconds":2,
+                                  "id":"Curabitur"
+                               }
+                            ]
+                         }
+                      ]
+                   },
+                   {
+                      "flows":[
+                         {
+                            "html":"Donec nisl sapien, molestie in sagittis ut, placerat vitae metus. Aliquam hendrerit felis vel nibh lobortis, quis pharetra elit commodo.",
+                            "seconds":3,
+                            "id":"Donec"
+                         }
+                      ]
+                   },
+                   {
+                      "flows":[
+                         {
+                            "html":"Fusce ut metus dolor. Sed imperdiet, tellus sed consectetur dapibus, nisl sem fringilla sapien, sit amet viverra massa lectus eget velit. Sed facilisis neque at mattis tristique.",
+                            "seconds":3,
+                            "id":"Fusce"
+                         }
+                      ]
+                   }
+                ]
 
             console.log("catching on :: " + narrator);
             // should be the event string from my_pages configuration.
@@ -68,6 +212,13 @@
                 console.log("narrator timeline 'playing': ", e.playing);
                 document.getElementById('feedback').innerHTML = 'id:' + e.id + ' playing:' + e.playing;
             }, true);
+
+            narrator.setAttribute("sections", JSON.stringify(my_sections));
+            narrator.setAttribute("font-size-min--section", "1vmin");
+            narrator.setAttribute("font-size-max--section", "3vmin");
+            kundel.narrator.changed(narrator, "trigger", null, new Date().getTime());
+
+            kundel.narrator.created(narrator);
         </script>
     </body>
 </html>
