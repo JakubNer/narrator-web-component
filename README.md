@@ -16,6 +16,8 @@ that sections are enlarged to bring viewer's attention to all the "flows" it con
 
 As each "flow" is highlighted it fires an event with it's "id".
 
+The following capture is the component running from [resources/pubic/index.html](resources/pubic/index.html):
+
 ![demo](https://github.com/JakubNer/narrator-web-component/blob/master/assets/demo.gif)
 
 The component provides a play/pause button.  All sections are clickable; a click jumps to the
