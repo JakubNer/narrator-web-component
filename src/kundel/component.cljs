@@ -89,7 +89,9 @@
         (when-let [subsection-js-element (find-parent-with-class flow-js-element "narrator-subsection")]
           (dom/remove-class! subsection-js-element "narrator-current"))
         (when-let [subsection-frame-js-element (find-parent-with-class flow-js-element "narrator-subsection-frame")]
-          (dom/remove-class! subsection-frame-js-element "narrator-current")))
+          (dom/remove-class! subsection-frame-js-element "narrator-current")
+          (dom/remove-class! subsection-frame-js-element "has-previous-subsection")
+          (dom/remove-class! subsection-frame-js-element "has-next-subsection")))
       (when (and section (not (= section current-section)))
         (when-let [section-js-element (find-parent-with-class flow-js-element "narrator-section")]
           (dom/remove-class! section-js-element "narrator-current")
@@ -102,7 +104,11 @@
         (dom/add-class! subsection-frame-js-element "narrator-current")
         (let [[_ percentage] (get-subsection-index-percentage-tuple @narration current-flow)
               carousel-js-element (find-parent-with-class current-flow-js-element "narrator-susbection-carousel")]
-          (dom/set-style! carousel-js-element :transform (str "translateX(-" percentage "%)"))))
+          (dom/set-style! carousel-js-element :transform (str "translateX(-" percentage "%)")))
+        (when (:subsprev @current)
+          (dom/add-class! subsection-frame-js-element "has-previous-subsection"))
+        (when (:subsnext @current)
+          (dom/add-class! subsection-frame-js-element "has-next-subsection")))
       (when sections-js-element
         (dom/add-class! section-js-element "narrator-current")
         (if current-subsection
@@ -183,6 +189,18 @@
     (when-let [first-subsection-keyframe (get-narration-keyframe @narration first-subsection-flow)]
       (set-keyframe first-subsection-keyframe))))
 
+(defn goto-previous-subsection []
+  "Set keyframe at last subsection flow of previous subsection"
+  (when-let [subsection-flow (last (:flows (:subsprev @current)))]
+    (when-let [subsection-keyframe (get-narration-keyframe @narration subsection-flow)]
+      (set-keyframe subsection-keyframe))))
+
+(defn goto-next-subsection []
+  "Set keyframe at first subsection flow of next subsection"
+  (when-let [subsection-flow (first (:flows (:subsnext @current)))]
+    (when-let [subsection-keyframe (get-narration-keyframe @narration subsection-flow)]
+      (set-keyframe subsection-keyframe))))
+
 ;;
 ;; Rendered components
 ;;
@@ -229,24 +247,23 @@
            {:src      "data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU5IDU5IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1OSA1OTsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSIzMnB4IiBoZWlnaHQ9IjMycHgiPgo8Zz4KCTxwYXRoIGQ9Ik0yNi41LDJjMS42NTQsMCwzLDEuMzQ2LDMsM3MtMS4zNDYsMy0zLDNjLTAuNTUyLDAtMSwwLjQ0Ny0xLDFzMC40NDgsMSwxLDFjMi43NTcsMCw1LTIuMjQzLDUtNXMtMi4yNDMtNS01LTUgICBjLTAuNTUyLDAtMSwwLjQ0Ny0xLDFTMjUuOTQ4LDIsMjYuNSwyeiIgZmlsbD0iIzAwMDAwMCIvPgoJPHBhdGggZD0iTTMyLjUsMmMxLjY1NCwwLDMsMS4zNDYsMywzcy0xLjM0NiwzLTMsM2MtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMWMyLjc1NywwLDUtMi4yNDMsNS01cy0yLjI0My01LTUtNSAgIGMtMC41NTIsMC0xLDAuNDQ3LTEsMVMzMS45NDgsMiwzMi41LDJ6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNNDMuMzk5LDRjLTAuNDY1LTIuMjc5LTIuNDg0LTQtNC44OTktNGMtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMWMxLjY1NCwwLDMsMS4zNDYsMywzcy0xLjM0NiwzLTMsMyAgIGMtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMWMyLjQxNCwwLDQuNDM0LTEuNzIxLDQuODk5LTRINTMuNXYxMGgtMWMtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMWgxdjhoLTEgICBjLTAuNTUyLDAtMSwwLjQ0Ny0xLDFzMC40NDgsMSwxLDFoMXY4aC0xYy0wLjU1MiwwLTEsMC40NDctMSwxczAuNDQ4LDEsMSwxaDF2N2gtMTJ2MTJoLTM2di05aDFjMC41NTIsMCwxLTAuNDQ3LDEtMXMtMC40NDgtMS0xLTEgICBoLTF2LThoMWMwLjU1MiwwLDEtMC40NDcsMS0xcy0wLjQ0OC0xLTEtMWgtMXYtOGgxYzAuNTUyLDAsMS0wLjQ0NywxLTFzLTAuNDQ4LTEtMS0xaC0xdi04aDFjMC41NTIsMCwxLTAuNDQ3LDEtMXMtMC40NDgtMS0xLTFoLTEgICBWNmgxMWgzYzAuNTUyLDAsMS0wLjQ0NywxLTFzLTAuNDQ4LTEtMS0xaC0xLjgxNmMwLjQxNC0xLjE2MiwxLjUxNC0yLDIuODE2LTJjMS42NTQsMCwzLDEuMzQ2LDMsM3MtMS4zNDYsMy0zLDMgICBjLTAuNTUyLDAtMSwwLjQ0Ny0xLDFzMC40NDgsMSwxLDFjMi43NTcsMCw1LTIuMjQzLDUtNXMtMi4yNDMtNS01LTVjLTIuNDE0LDAtNC40MzQsMS43MjEtNC44OTksNEgzLjV2NTVoMzhoMS40MTRINTUuNVY0Ni40MTRWNDUgICBWNEg0My4zOTl6IE00My41LDQ3aDguNTg2TDQzLjUsNTUuNTg2VjQ3eiBNNDQuOTE1LDU3bDguNTg1LTguNTg1VjU3SDQ0LjkxNXoiIGZpbGw9IiMwMDAwMDAiLz4KCTxwYXRoIGQ9Ik0zMC41LDE2aC0yYy0wLjU1MiwwLTEsMC40NDctMSwxczAuNDQ4LDEsMSwxaDJjMC41NTIsMCwxLTAuNDQ3LDEtMVMzMS4wNTIsMTYsMzAuNSwxNnoiIGZpbGw9IiMwMDAwMDAiLz4KCTxwYXRoIGQ9Ik0yNC41LDE2aC0yYy0wLjU1MiwwLTEsMC40NDctMSwxczAuNDQ4LDEsMSwxaDJjMC41NTIsMCwxLTAuNDQ3LDEtMVMyNS4wNTIsMTYsMjQuNSwxNnoiIGZpbGw9IiMwMDAwMDAiLz4KCTxwYXRoIGQ9Ik0xOC41LDE2aC0yYy0wLjU1MiwwLTEsMC40NDctMSwxczAuNDQ4LDEsMSwxaDJjMC41NTIsMCwxLTAuNDQ3LDEtMVMxOS4wNTIsMTYsMTguNSwxNnoiIGZpbGw9IiMwMDAwMDAiLz4KCTxwYXRoIGQ9Ik00MC41LDE4aDJjMC41NTIsMCwxLTAuNDQ3LDEtMXMtMC40NDgtMS0xLTFoLTJjLTAuNTUyLDAtMSwwLjQ0Ny0xLDFTMzkuOTQ4LDE4LDQwLjUsMTh6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNNDYuNSwxOGgyYzAuNTUyLDAsMS0wLjQ0NywxLTFzLTAuNDQ4LTEtMS0xaC0yYy0wLjU1MiwwLTEsMC40NDctMSwxUzQ1Ljk0OCwxOCw0Ni41LDE4eiIgZmlsbD0iIzAwMDAwMCIvPgoJPHBhdGggZD0iTTM2LjUsMTZoLTJjLTAuNTUyLDAtMSwwLjQ0Ny0xLDFzMC40NDgsMSwxLDFoMmMwLjU1MiwwLDEtMC40NDcsMS0xUzM3LjA1MiwxNiwzNi41LDE2eiIgZmlsbD0iIzAwMDAwMCIvPgoJPHBhdGggZD0iTTEzLjUsMTdjMC0wLjU1My0wLjQ0OC0xLTEtMXYtNGMwLTAuNTUzLTAuNDQ4LTEtMS0xcy0xLDAuNDQ3LTEsMXY0Yy0wLjU1MiwwLTEsMC40NDctMSwxczAuNDQ4LDEsMSwxdjggICBjLTAuNTUyLDAtMSwwLjQ0Ny0xLDFzMC40NDgsMSwxLDF2OGMtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMXY4Yy0wLjU1MiwwLTEsMC40NDctMSwxczAuNDQ4LDEsMSwxdjVjMCwwLjU1MywwLjQ0OCwxLDEsMSAgIHMxLTAuNDQ3LDEtMXYtNWMwLjU1MiwwLDEtMC40NDcsMS0xcy0wLjQ0OC0xLTEtMXYtOGMwLjU1MiwwLDEtMC40NDcsMS0xcy0wLjQ0OC0xLTEtMXYtOGMwLjU1MiwwLDEtMC40NDcsMS0xcy0wLjQ0OC0xLTEtMXYtOCAgIEMxMy4wNTIsMTgsMTMuNSwxNy41NTMsMTMuNSwxN3oiIGZpbGw9IiMwMDAwMDAiLz4KCTxwYXRoIGQ9Ik0zNi41LDI2aC0yYy0wLjU1MiwwLTEsMC40NDctMSwxczAuNDQ4LDEsMSwxaDJjMC41NTIsMCwxLTAuNDQ3LDEtMVMzNy4wNTIsMjYsMzYuNSwyNnoiIGZpbGw9IiMwMDAwMDAiLz4KCTxwYXRoIGQ9Ik0zMC41LDI2aC0yYy0wLjU1MiwwLTEsMC40NDctMSwxczAuNDQ4LDEsMSwxaDJjMC41NTIsMCwxLTAuNDQ3LDEtMVMzMS4wNTIsMjYsMzAuNSwyNnoiIGZpbGw9IiMwMDAwMDAiLz4KCTxwYXRoIGQ9Ik0xOC41LDI2aC0yYy0wLjU1MiwwLTEsMC40NDctMSwxczAuNDQ4LDEsMSwxaDJjMC41NTIsMCwxLTAuNDQ3LDEtMVMxOS4wNTIsMjYsMTguNSwyNnoiIGZpbGw9IiMwMDAwMDAiLz4KCTxwYXRoIGQ9Ik0yNC41LDI2aC0yYy0wLjU1MiwwLTEsMC40NDctMSwxczAuNDQ4LDEsMSwxaDJjMC41NTIsMCwxLTAuNDQ3LDEtMVMyNS4wNTIsMjYsMjQuNSwyNnoiIGZpbGw9IiMwMDAwMDAiLz4KCTxwYXRoIGQ9Ik00Ni41LDI4aDJjMC41NTIsMCwxLTAuNDQ3LDEtMXMtMC40NDgtMS0xLTFoLTJjLTAuNTUyLDAtMSwwLjQ0Ny0xLDFTNDUuOTQ4LDI4LDQ2LjUsMjh6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNNDAuNSwyOGgyYzAuNTUyLDAsMS0wLjQ0NywxLTFzLTAuNDQ4LTEtMS0xaC0yYy0wLjU1MiwwLTEsMC40NDctMSwxUzM5Ljk0OCwyOCw0MC41LDI4eiIgZmlsbD0iIzAwMDAwMCIvPgoJPHBhdGggZD0iTTQwLjUsMzhoMmMwLjU1MiwwLDEtMC40NDcsMS0xcy0wLjQ0OC0xLTEtMWgtMmMtMC41NTIsMC0xLDAuNDQ3LTEsMVMzOS45NDgsMzgsNDAuNSwzOHoiIGZpbGw9IiMwMDAwMDAiLz4KCTxwYXRoIGQ9Ik00Ni41LDM4aDJjMC41NTIsMCwxLTAuNDQ3LDEtMXMtMC40NDgtMS0xLTFoLTJjLTAuNTUyLDAtMSwwLjQ0Ny0xLDFTNDUuOTQ4LDM4LDQ2LjUsMzh6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNMzYuNSwzNmgtMmMtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMWgyYzAuNTUyLDAsMS0wLjQ0NywxLTFTMzcuMDUyLDM2LDM2LjUsMzZ6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNMzAuNSwzNmgtMmMtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMWgyYzAuNTUyLDAsMS0wLjQ0NywxLTFTMzEuMDUyLDM2LDMwLjUsMzZ6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNMTguNSwzNmgtMmMtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMWgyYzAuNTUyLDAsMS0wLjQ0NywxLTFTMTkuMDUyLDM2LDE4LjUsMzZ6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNMjQuNSwzNmgtMmMtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMWgyYzAuNTUyLDAsMS0wLjQ0NywxLTFTMjUuMDUyLDM2LDI0LjUsMzZ6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNMjQuNSw0NmgtMmMtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMWgyYzAuNTUyLDAsMS0wLjQ0NywxLTFTMjUuMDUyLDQ2LDI0LjUsNDZ6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNMzYuNSw0NmgtMmMtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMWgyYzAuNTUyLDAsMS0wLjQ0NywxLTFTMzcuMDUyLDQ2LDM2LjUsNDZ6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNMzAuNSw0NmgtMmMtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMWgyYzAuNTUyLDAsMS0wLjQ0NywxLTFTMzEuMDUyLDQ2LDMwLjUsNDZ6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNMTguNSw0NmgtMmMtMC41NTIsMC0xLDAuNDQ3LTEsMXMwLjQ0OCwxLDEsMWgyYzAuNTUyLDAsMS0wLjQ0NywxLTFTMTkuMDUyLDQ2LDE4LjUsNDZ6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="}]]
          [:div.narrator-subsection-frame
           [:img.narrator-subsection-frame-left
-           {:style    {:disabled true}
-            :src      ""
-            :on-click #()}]
+           {:src      "data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDQyMCA0MjAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQyMCA0MjA7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMzJweCIgaGVpZ2h0PSIzMnB4Ij4KPGc+Cgk8cGF0aCBkPSJNMjEwLDIxYzEwNC4yMTYsMCwxODksODQuNzg0LDE4OSwxODlzLTg0Ljc4NCwxODktMTg5LDE4OVMyMSwzMTQuMjE2LDIxLDIxMFMxMDUuNzg0LDIxLDIxMCwyMSBNMjEwLDAgICBDOTQuMDMxLDAsMCw5NC4wMjQsMCwyMTBzOTQuMDMxLDIxMCwyMTAsMjEwczIxMC05NC4wMjQsMjEwLTIxMFMzMjUuOTY5LDAsMjEwLDBMMjEwLDB6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNOTguMTQ3LDIzMy4yNzVsODMuNzEzLDU0Ljc4MmMxOS4zMzQsMTIuNjU2LDM1LjE0LDQuMTAyLDM1LjE0LTE4Ljk5OFYyNTEuNTFsNTUuODYsMzYuNTU0ICAgYzE5LjMzNCwxMi42NTYsMzUuMTQsNC4xMDIsMzUuMTQtMTguOTk4VjE1MC45NDFjMC0yMy4xLTE1Ljc5Mi0zMS42MTItMzUuMDg0LTE4LjkxNEwyMTcsMTY4LjgxOXYtMTcuODg1ICAgYzAtMjMuMS0xNS43OTItMzEuNjEyLTM1LjA4NC0xOC45MTRsLTgzLjgzOSw1NS4xNjdDNzguNzkyLDE5OS44ODUsNzguODEzLDIyMC42MjYsOTguMTQ3LDIzMy4yNzV6IE0xMTIuOTczLDIwMi41MzEgICBsNzEuMzM3LTQ2LjkzNWM2LjQyNi00LjIyOCwxMS42OS0xLjM5MywxMS42OSw2LjN2MzEuODc4YzAsNy43LDUuMjY0LDEwLjUzNSwxMS43MDQsNi4zbDY3LjYwNi00NC40NzggICBjNi40MjYtNC4yMjgsMTEuNjktMS4zOTMsMTEuNjksNi4zdjk2LjMyN2MwLDcuNy01LjI2NCwxMC41NDktMTEuNzE4LDYuMzM1bC02Ny41NjQtNDQuMjI2Yy02LjQ0LTQuMjE0LTExLjcxOC0xLjM2NS0xMS43MTgsNi4zMzUgICB2MzEuNTU2YzAsNy43LTUuMjY0LDEwLjU0OS0xMS43MTgsNi4zMjhsLTcxLjI4OC00Ni42NTVDMTA2LjU0NywyMTMuNjc1LDEwNi41NDcsMjA2Ljc1OSwxMTIuOTczLDIwMi41MzF6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
+            :on-click #(goto-previous-subsection)}]
           [:img.narrator-subsection-frame-right
-           {:style    {:disabled true}
-            :src      ""
-            :on-click #()}]
-          [:div.narrator-susbection-carousel
-           {:style {:width (str (* 100 (count (:subsections section))) "%")}}
-           (doall
-             (for [subsection (:subsections section)]
-               [:div.narrator-subsection {:key (gensym "n-ssct-")}
-                (doall
-                  (for [flow (:flows subsection)]
-                    [:span.narrator-flow {:key                     (gensym "n-sct-fl-")
-                                          :id                      (get-element-id flow)
-                                          :dangerouslySetInnerHTML #js{:__html (:html flow)}
-                                          :on-click                #(clicked-flow flow)}]))]))]]]))])
+           {:src      "data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDQyMCA0MjAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQyMCA0MjA7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMzJweCIgaGVpZ2h0PSIzMnB4Ij4KPGc+Cgk8cGF0aCBkPSJNMjEwLDIxYzEwNC4yMTYsMCwxODksODQuNzg0LDE4OSwxODlzLTg0Ljc4NCwxODktMTg5LDE4OVMyMSwzMTQuMjE2LDIxLDIxMFMxMDUuNzg0LDIxLDIxMCwyMSBNMjEwLDAgICBDOTQuMDMxLDAsMCw5NC4wMjQsMCwyMTBzOTQuMDMxLDIxMCwyMTAsMjEwczIxMC05NC4wMjQsMjEwLTIxMFMzMjUuOTY5LDAsMjEwLDBMMjEwLDB6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNMzIxLjkxNiwxODcuMTg3bC04My44MzItNTUuMTY3QzIxOC43OTIsMTE5LjMyOSwyMDMsMTI3Ljg0MSwyMDMsMTUwLjk0MXYxNy44ODVsLTU1LjkxNi0zNi43OTkgICBDMTI3Ljc5MiwxMTkuMzI5LDExMiwxMjcuODQxLDExMiwxNTAuOTQxdjExOC4xMjVjMCwyMy4xLDE1LjgxMywzMS42NDcsMzUuMTQ3LDE4Ljk5OEwyMDMsMjUxLjUxdjE3LjU1NiAgIGMwLDIzLjEsMTUuODEzLDMxLjY0NywzNS4xNDcsMTguOTk4bDgzLjcxMy01NC43ODJDMzQxLjE4NywyMjAuNjI2LDM0MS4yMDgsMTk5Ljg4NSwzMjEuOTE2LDE4Ny4xODd6IE0zMDcuMDA2LDIxNy44OTYgICBsLTcxLjI5NSw0Ni42NTVjLTYuNDQsNC4yMjEtMTEuNzExLDEuMzY1LTExLjcxMS02LjMyOHYtMzEuNTU2YzAtNy43LTUuMjcxLTEwLjU0OS0xMS43MTgtNi4zMzVsLTY3LjU2NCw0NC4yMjYgICBjLTYuNDQ3LDQuMjE0LTExLjcxOCwxLjM1OC0xMS43MTgtNi4zMzV2LTk2LjMyN2MwLTcuNyw1LjI2NC0xMC41MzUsMTEuNjk3LTYuM2w2Ny42MDYsNDQuNDc4ICAgYzYuNDMzLDQuMjI4LDExLjY5NywxLjM5MywxMS42OTctNi4zdi0zMS44NzhjMC03LjcsNS4yNjQtMTAuNTM1LDExLjY5Ny02LjNsNzEuMzMsNDYuOTM1ICAgQzMxMy40NiwyMDYuNzU5LDMxMy40NTMsMjEzLjY3NSwzMDcuMDA2LDIxNy44OTZ6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
+            :on-click #(goto-next-subsection)}]
+          [:div.narrator-subsection-frame-hider
+           [:div.narrator-susbection-carousel
+            {:style {:width (str (* 100 (count (:subsections section))) "%")}}
+            (doall
+              (for [subsection (:subsections section)]
+                [:div.narrator-subsection {:key (gensym "n-ssct-")}
+                 (doall
+                   (for [flow (:flows subsection)]
+                     [:span.narrator-flow {:key                     (gensym "n-sct-fl-")
+                                           :id                      (get-element-id flow)
+                                           :dangerouslySetInnerHTML #js{:__html (:html flow)}
+                                           :on-click                #(clicked-flow flow)}]))]))]]]]))])
 
 (defn timeline-render [sections]
   [:div.narrator-frame

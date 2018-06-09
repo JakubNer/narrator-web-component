@@ -143,8 +143,12 @@
     margin-bottom: 0px;
   }
 
-  .narrator-subsection-frame {
+  .narrator-subsection-frame-hider {
     overflow: hidden;
+  }
+
+  .narrator-subsection-frame {
+    position: relative;
     max-height: 0px;
     -webkit-transition: max-height .5s linear;
     -moz-transition: max-height .5s linear;
@@ -153,7 +157,7 @@
 
     margin-right: 1em;
     margin-left: 1em;
-    background-color: #DCDCDC;
+    background-color: #F5F5F5;
     padding-right: 1em;
     padding-left: 1em;
     margin-top: .5em;
@@ -166,6 +170,62 @@
 
   .narrator-subsection-frame.narrator-current {
     max-height: 500px;
+  }
+
+  .narrator-subsection-frame-left {
+    position: absolute;
+    left: -.75em;
+    top: 40%;
+    opacity: 0;
+
+    -webkit-transition: opacity .5s linear;
+    -moz-transition: opacity .5s linear;
+    -o-transition: opacity .5s linear;
+    transition: opacity .5s linear;
+  }
+
+  .narrator-subsection-frame-right {
+    position: absolute;
+    right: -.75em;
+    top: 40%;
+    opacity: 0;
+
+    -webkit-transition: opacity .5s linear;
+    -moz-transition: opacity .5s linear;
+    -o-transition: opacity .5s linear;
+    transition: opacity .5s linear;
+  }
+
+  .narrator-sections.narrating .narrator-subsection-frame-left {
+    opacity: 0;
+  }
+
+  .narrator-subsection-frame:not(.narrator-current) .narrator-subsection-frame-left {
+    opacity: 0;
+  }
+
+  .narrator-subsection-frame:not(.has-previous-subsection) .narrator-subsection-frame-left {
+    opacity: 0;
+  }
+
+  .narrator-sections:not(.narrating) .narrator-subsection-frame.narrator-current.has-previous-subsection .narrator-subsection-frame-left {
+    opacity: 1;
+  }
+
+  .narrator-sections.narrating .narrator-subsection-frame-right {
+    opacity: 0;
+  }
+
+  .narrator-subsection-frame:not(.narrator-current) .narrator-subsection-frame-right {
+    opacity: 0;
+  }
+
+  .narrator-subsection-frame:not(.has-next-subsection) .narrator-subsection-frame-right {
+    opacity: 0;
+  }
+
+  .narrator-sections:not(.narrating) .narrator-subsection-frame.narrator-current.has-next-subsection .narrator-subsection-frame-right {
+    opacity: 1;
   }
 
   .narrator-susbection-carousel {
