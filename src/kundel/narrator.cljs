@@ -27,11 +27,12 @@
 ;;   Note that each 'attrs' has to have a corresponding 'fns' entry below.
 ;;
 ;; Modify these to suite your element:
-(def attrs {"sections" (r/atom nil)
-            "paused" (r/atom nil)
-            "trigger" (r/atom nil) ;; just change this in some fashion to trigger, update as timestamp?
-            "font-size-min--section" (r/atom nil)
-            "font-size-max--section" (r/atom nil)})
+(defn ctor-attrs []
+  {"sections" (r/atom nil)
+   "paused" (r/atom nil)
+   "trigger" (r/atom nil) ;; just change this in some fashion to trigger, update as timestamp?
+   "font-size-min--section" (r/atom nil)
+   "font-size-max--section" (r/atom nil)})
 
 ;; Custom translation functions for each attribute.
 ;; %1 is original property value, %2 is the new value.
@@ -56,17 +57,24 @@
 
 ;; NO NEED TO MODIFY ANYTHING BELOW
 
+(def attrs (atom {}))
+
 (defn ^:export created [this]
-  (doseq [keyval attrs]
-    (swap! (val keyval) (get fns (key keyval)) (.getAttribute this (key keyval))))
-  (r/render [c/render this attrs] this))      ;; attach reagent component
+  (let [_attrs (ctor-attrs)]
+    (doseq [keyval _attrs]
+      (swap! (val keyval) (get fns (key keyval)) (.getAttribute this (key keyval))))
+    (swap! attrs (merge @attrs {this _attrs}))
+    (r/render [c/render this _attrs] this)))      ;; attach reagent component
 
 (defn attached [this]) ;; not wired into reagent component
 
-(defn detached [this]) ;; not wired into reagent component
+(defn ^:export detached [this] ;; not wired into reagent component, remove attributes tracked by this namespace for 'this'
+  (swap! attrs (dissoc @attrs this)))
 
 (defn ^:export changed [this property-name old-value new-value]
-  (swap! (get attrs property-name) (get fns property-name) new-value))
+  (when-let [_attrs (get @attrs this)]
+    (swap! (get _attrs property-name) (get fns property-name) new-value)
+    (swap! attrs (merge @attrs {this _attrs}))))
 
 ;; register the w3c custom element.
 (defn ^:export register []
