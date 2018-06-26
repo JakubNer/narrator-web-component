@@ -2,7 +2,8 @@
   (:require
     [goog.object :as go]
     [reagent.core :as r]
-    [kundel.component :as c]))
+    [kundel.component :as c]
+    [debux.cs.core :refer-macros [clog dbg break]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; w3c custom element registration and callback handlers.
@@ -39,10 +40,10 @@
 ;; Examples:
 ;;    #(do %2)              ;; just replaces old value.
 ;;    #(.parse js/JSON %2)  ;; parses JSON into JS object
-;;    #(= "true" %2)        ;; parses boolean
+;;    #(= "true" (str %2))        ;; parses boolean
 ;; This list's keys must match the 'attrs' list.
 (def fns {"sections" #(js->clj (.parse js/JSON %2) :keywordize-keys true)
-          "paused" #(= "true" %2)
+          "paused" #(= "true" (str %2))
           "trigger" #(identity true)
           "font-size-min--section" #(do %2)
           "font-size-max--section" #(do %2)})
@@ -63,7 +64,7 @@
   (let [_attrs (ctor-attrs)]
     (doseq [keyval _attrs]
       (swap! (val keyval) (get fns (key keyval)) (.getAttribute this (key keyval))))
-    (swap! attrs (merge @attrs {this _attrs}))
+    (reset! attrs (merge @attrs {this _attrs}))
     (r/render [c/render this _attrs] this)))      ;; attach reagent component
 
 (defn attached [this]) ;; not wired into reagent component
@@ -74,7 +75,7 @@
 (defn ^:export changed [this property-name old-value new-value]
   (when-let [_attrs (get @attrs this)]
     (swap! (get _attrs property-name) (get fns property-name) new-value)
-    (swap! attrs (merge @attrs {this _attrs}))))
+    (reset! attrs (merge @attrs {this _attrs}))))
 
 ;; register the w3c custom element.
 (defn ^:export register []

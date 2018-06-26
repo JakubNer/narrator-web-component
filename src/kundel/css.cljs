@@ -41,6 +41,10 @@
     height: 0px;
   }
 
+  #narrator-sections-center-overlay {
+    pointer-events: none;
+  }
+
   .narrator-sections-center-play {
     position: absolute;
     top: -128px;
@@ -143,6 +147,10 @@
     margin-bottom: 0px;
   }
 
+  .narrator-subsection-frame:not(.narrator-current) .narrator-subsection-frame-hider {
+    pointer-events: none;
+  }
+
   .narrator-subsection-frame-hider {
     overflow: hidden;
   }
@@ -177,6 +185,7 @@
     left: -.75em;
     top: 40%;
     opacity: 0;
+    cursor: default;
 
     -webkit-transition: opacity .5s linear;
     -moz-transition: opacity .5s linear;
@@ -189,6 +198,7 @@
     right: -.75em;
     top: 40%;
     opacity: 0;
+    cursor: default;
 
     -webkit-transition: opacity .5s linear;
     -moz-transition: opacity .5s linear;
@@ -197,34 +207,42 @@
   }
 
   .narrator-sections.narrating .narrator-subsection-frame-left {
+    cursor: default;
     opacity: 0;
   }
 
   .narrator-subsection-frame:not(.narrator-current) .narrator-subsection-frame-left {
+    cursor: default;
     opacity: 0;
   }
 
   .narrator-subsection-frame:not(.has-previous-subsection) .narrator-subsection-frame-left {
+    cursor: default;
     opacity: 0;
   }
 
   .narrator-sections:not(.narrating) .narrator-subsection-frame.narrator-current.has-previous-subsection .narrator-subsection-frame-left {
+    cursor: pointer;
     opacity: 1;
   }
 
   .narrator-sections.narrating .narrator-subsection-frame-right {
+    cursor: default;
     opacity: 0;
   }
 
   .narrator-subsection-frame:not(.narrator-current) .narrator-subsection-frame-right {
+    cursor: default;
     opacity: 0;
   }
 
   .narrator-subsection-frame:not(.has-next-subsection) .narrator-subsection-frame-right {
+    cursor: default;
     opacity: 0;
   }
 
   .narrator-sections:not(.narrating) .narrator-subsection-frame.narrator-current.has-next-subsection .narrator-subsection-frame-right {
+    cursor: pointer;
     opacity: 1;
   }
 

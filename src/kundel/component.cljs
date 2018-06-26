@@ -6,7 +6,7 @@
     [kundel.css :as css]))
 
 (def this (r/atom nil))
-(def previous-paused-attribute (r/atom nil))
+(def attrs (atom {}))
 
 ;;
 ;; narration / timeline variables and utilities
@@ -125,6 +125,7 @@
 
 (defn stop-playing []
   (when (playing?)
+    (reset! (get @attrs "paused") true)
     (js/clearTimeout @timeout)
     (reset! timeout nil)
     (add-remove-classes-and-properties-for-animation)))
@@ -152,6 +153,7 @@
 
 (defn start-playing []
   (stop-playing)
+  (reset! (get @attrs "paused") false)
   (let [seconds (:seconds (:flow (nth @narration @keyframe)))
         millis (* 1000 seconds)]
     (reset! timeout (js/setTimeout #(do
@@ -227,8 +229,6 @@
 
 (defn render-sections [sections]
   [:div.narrator-sections
-    [:div.narrator-sections-center
-     [:div#narrator-sections-center-overlay]]
     (doall
       (for [section sections]
         [:div.narrator-section {:key (gensym "n-sct-")
@@ -263,31 +263,32 @@
                      [:span.narrator-flow {:key                     (gensym "n-sct-fl-")
                                            :id                      (get-element-id flow)
                                            :dangerouslySetInnerHTML #js{:__html (:html flow)}
-                                           :on-click                #(clicked-flow flow)}]))]))]]]]))])
+                                           :on-click                #(clicked-flow flow)}]))]))]]]]))
+    [:div.narrator-sections-center
+     [:div#narrator-sections-center-overlay]]])
+
 
 (defn timeline-render [sections]
   [:div.narrator-frame
    [render-sections sections]
    [render-buttons]])
 
-(defn render [_this attrs]
-  (let [sections @(get attrs "sections")
-        paused  @(get attrs "paused")
-        previous-paused @previous-paused-attribute
-        font-min @(get attrs "font-size-min--section")
-        font-max @(get attrs "font-size-max--section")
-        triggered @(get attrs "trigger")] ;; whenever triggered, make divs not visible, and animate visible after 500ms]
+(defn render [_this _attrs]
+  (reset! attrs _attrs)
+  (let [sections @(get @attrs "sections")
+        paused  @(get @attrs "paused")
+        font-min @(get @attrs "font-size-min--section")
+        font-max @(get @attrs "font-size-max--section")
+        triggered @(get @attrs "trigger")] ;; whenever triggered, restart play from beginning after 1 second
     (reset! this _this)
     (reset! narration (get-narration sections))
     (if triggered
       (do
-        (reset! (get attrs "trigger") false)
+        (reset! (get @attrs "trigger") false)
         (js/setTimeout #(do
                           (set-keyframe 0)
                           (when (not paused) (play)) 1000)))
-      (when (not= paused previous-paused)
-        (if paused (when (playing?) (pause)) (when (not (playing?)) (play)))
-        (reset! previous-paused-attribute paused)))
-    [:div
+      (if paused (when (playing?) (pause)) (when (not (playing?)) (play))))
+    [:div {:style {:height "100%" :width "100%"}}
      [:style (css/get-styles font-min font-max)]
      (timeline-render sections)]))
