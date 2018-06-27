@@ -31,7 +31,7 @@
 (defn ctor-attrs []
   {"sections" (atom nil)
    "paused" (atom nil)
-   "trigger" (atom nil) ;; just change this in some fashion to trigger, update as timestamp?
+   "trigger" (r/atom nil) ;; just change this in some fashion to trigger, update as timestamp?
    "font-size-min--section" (atom nil)
    "font-size-max--section" (atom nil)})
 
