@@ -29,11 +29,11 @@
 ;;
 ;; Modify these to suite your element:
 (defn ctor-attrs []
-  {"sections" (r/atom nil)
-   "paused" (r/atom nil)
-   "trigger" (r/atom nil) ;; just change this in some fashion to trigger, update as timestamp?
-   "font-size-min--section" (r/atom nil)
-   "font-size-max--section" (r/atom nil)})
+  {"sections" (atom nil)
+   "paused" (atom nil)
+   "trigger" (atom nil) ;; just change this in some fashion to trigger, update as timestamp?
+   "font-size-min--section" (atom nil)
+   "font-size-max--section" (atom nil)})
 
 ;; Custom translation functions for each attribute.
 ;; %1 is original property value, %2 is the new value.
@@ -87,3 +87,6 @@
                             "attributeChangedCallback" #(this-as this (changed this %1 %2 %3)))]
       (go/extend proto proto')
       (.registerElement js/document element-name #js{"prototype" proto}))))
+
+(defn ^:export toggle-play-state [this]
+  (c/toggle-play-state this))
