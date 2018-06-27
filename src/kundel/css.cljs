@@ -1,6 +1,6 @@
 (ns kundel.css)
 
-(defn get-styles [font-min font-max]
+(defn get-styles [font-min font-max id]
   (str "
 
   .narrator-frame {
@@ -41,7 +41,7 @@
     height: 0px;
   }
 
-  #narrator-sections-center-overlay {
+  #narrator-sections-center-overlay" id " {
     pointer-events: none;
   }
 

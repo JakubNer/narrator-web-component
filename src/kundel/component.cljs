@@ -11,7 +11,8 @@
   (reset! attrs (assoc @attrs this {:narration (r/atom nil)
                                     :keyframe (r/atom nil)
                                     :current (r/atom nil)
-                                    :timeout (r/atom nil)})))
+                                    :timeout (r/atom nil)
+                                    :id (r/atom (gensym ""))})))
 
 (defn has-attrs [this]
   (contains? @attrs this))
@@ -27,6 +28,9 @@
 
 (defn timeout [this]
   (:timeout (get @attrs this)))
+
+(defn id [this]
+  (:id (get @attrs this)))
 
 ;;
 ;; narration / timeline variables and utilities
@@ -180,7 +184,7 @@
 (defn pause [this]
   (stop-playing this)
   (fire-event this (:id (:flow @(current this))))
-  (let [image-element (dom/sel1 :#narrator-sections-center-overlay)]
+  (let [image-element (dom/sel1 (keyword (str "#narrator-sections-center-overlay" @(id this))))]
     (dom/remove-class! image-element :narrator-sections-center-pause)
     (dom/remove-class! image-element :narrator-sections-center-play)
     (js/setTimeout #(dom/add-class! image-element :narrator-sections-center-pause)) 100))
@@ -188,7 +192,7 @@
 (defn play [this]
   (start-playing this)
   (fire-event this (:id (:flow @(current this))))
-  (let [image-element (dom/sel1 :#narrator-sections-center-overlay)]
+  (let [image-element (dom/sel1 (keyword (str "#narrator-sections-center-overlay" @(id this))))]
     (dom/remove-class! image-element :narrator-sections-center-pause)
     (dom/remove-class! image-element :narrator-sections-center-play)
     (js/setTimeout #(dom/add-class! image-element :narrator-sections-center-play) 100)))
@@ -278,7 +282,7 @@
                                            :dangerouslySetInnerHTML #js{:__html (:html flow)}
                                            :on-click                #(clicked-flow this flow)}]))]))]]]]))
     [:div.narrator-sections-center
-     [:div#narrator-sections-center-overlay]]])
+     [(keyword (str "div#narrator-sections-center-overlay" @(id this)))]]])
 
 
 (defn timeline-render [this sections]
@@ -306,5 +310,5 @@
                           (when (not paused) (play this)) 1000)))
       (if paused (when (playing? this) (pause this)) (when (not (playing? this)) (play this))))
     [:div {:style {:height "100%" :width "100%"}}
-     [:style (css/get-styles font-min font-max)]
+     [:style (css/get-styles font-min font-max @(id this))]
      (timeline-render this sections)]))
