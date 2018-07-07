@@ -83,19 +83,21 @@
   }
 
   .narrator-section {
-    -webkit-transition: font-size .5s ease-in-out;
-    -moz-transition: font-size .5s ease-in-out;
-    -o-transition: font-size .5s ease-in-out;
-    transition: font-size .5s ease-in-out;
+    -webkit-transition: font-size .5s ease-in-out, line-height .5s ease-in-out;
+    -moz-transition: font-size .5s ease-in-out, line-height .5s ease-in-out;
+    -o-transition: font-size .5s ease-in-out, line-height .5s ease-in-out;
+    transition: font-size .5s ease-in-out, line-height .5s ease-in-out;
     width: 95%;
   }
 
   .narrator-section.narrator-current {
     font-size: " font-max ";
+    line-height: " font-max ";
   }
 
   .narrator-section:not(.narrator-current) {
     font-size: " font-min ";
+    line-height: " font-min ";
   }
 
   .narrator-subsection-frame-expand {
