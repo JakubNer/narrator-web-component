@@ -15,7 +15,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
   }
 
   .narrator-buttons {
@@ -88,6 +88,7 @@
     -o-transition: font-size .5s ease-in-out, line-height .5s ease-in-out;
     transition: font-size .5s ease-in-out, line-height .5s ease-in-out;
     width: 95%;
+    margin-top: " font-max ";
   }
 
   .narrator-section.narrator-current {
