@@ -142,8 +142,21 @@
     (aset event "playing" (playing? this))
     (.dispatchEvent this event)))
 
+(defn start-progress-bar [seconds]
+  (let [progress-bar (dom/sel1 (str ".narrator-buttons-progress"))]
+    (dom/set-style! progress-bar :display "block")
+    (dom/set-style! progress-bar :animation (str "narration-progress " seconds "s linear"))
+    (.-offsetWidth progress-bar)))
+
+(defn stop-progress-bar []
+  (let [progress-bar (dom/sel1 (str ".narrator-buttons-progress"))]
+    (dom/set-style! progress-bar :display "none")
+    (dom/remove-style! progress-bar :animation "narration-progress")
+    (.-offsetWidth progress-bar)))
+
 (defn stop-playing [this]
   (when (playing? this)
+    (stop-progress-bar)
     (js/clearTimeout @(timeout this))
     (reset! (timeout this) nil)
     (add-remove-classes-and-properties-for-animation this)))
@@ -173,6 +186,7 @@
   (stop-playing this)
   (let [seconds (:seconds (:flow (nth @(narration this) @(keyframe this))))
         millis (* 1000 seconds)]
+    (start-progress-bar seconds)
     (reset! (timeout this) (js/setTimeout #(do
                                              (when (playing? this)
                                                (set-keyframe this (+ 1 @(keyframe this)))
@@ -226,6 +240,7 @@
 
 (defn render-buttons [this]
   [:div.narrator-buttons
+   [:div.narrator-buttons-progress]
    [:img.narrator-button
     {:src "data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDQyMCA0MjAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQyMCA0MjA7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMzJweCIgaGVpZ2h0PSIzMnB4Ij4KPGc+Cgk8cGF0aCBkPSJNMjEwLDIxYzEwNC4yMTYsMCwxODksODQuNzg0LDE4OSwxODlzLTg0Ljc4NCwxODktMTg5LDE4OVMyMSwzMTQuMjE2LDIxLDIxMFMxMDUuNzg0LDIxLDIxMCwyMSBNMjEwLDAgICBDOTQuMDMxLDAsMCw5NC4wMjQsMCwyMTBzOTQuMDMxLDIxMCwyMTAsMjEwczIxMC05NC4wMjQsMjEwLTIxMFMzMjUuOTY5LDAsMjEwLDBMMjEwLDB6IiBmaWxsPSIjMDAwMDAwIi8+Cgk8cGF0aCBkPSJNMTI5LjUsMTQzLjk0MXYxMzIuMTI1YzAsMTkuMjUsMTUuNzUsMzUsMzUsMzVzMzUtMTUuNzUsMzUtMzV2LTI3LjYxNWw1NS44NTMsMzYuNTU0ICAgQzI3NC42ODcsMjk3LjY0NywyOTAuNSwyODkuMSwyOTAuNSwyNjZWMTQ3Ljg3NWMwLTIzLjEtMTUuNzkyLTMxLjYxMi0zNS4wODQtMTguOTE0TDE5OS41LDE2NS43NnYtMjEuODE5YzAtMTkuMjUtMTUuNzUtMzUtMzUtMzUgICBTMTI5LjUsMTI0LjY5MSwxMjkuNSwxNDMuOTQxeiBNMTUwLjUsMTQzLjk0MWMwLTcuNyw2LjMtMTQsMTQtMTRzMTQsNi4zLDE0LDE0djIxLjYzN2MwLDcuNywwLDE5LjY1NiwwLDI2LjU3MiAgIGMwLDYuOTA5LDUuMjY0LDkuMSwxMS42OTcsNC44NjVsNjcuNjA2LTQ0LjQ3OGM2LjQzMy00LjIyOCwxMS42OTctMS4zOTMsMTEuNjk3LDYuM3Y5Ni4zMjdjMCw3LjctNS4yNzEsMTAuNTQ5LTExLjcxOCw2LjMzNSAgIGwtNjcuNTY0LTQ0LjIyNmMtNi40NDctNC4yMTQtMTEuNzE4LTIuMDE2LTExLjcxOCw0Ljg4NmMwLDYuODk1LDAsMTguODQ0LDAsMjYuNTQ0djI3LjM2M2MwLDcuNy02LjMsMTQtMTQsMTRzLTE0LTYuMy0xNC0xNCAgIFYyMzAuMzdjMC03LjcsMC0xOC4xMzcsMC0yMy4xOTFzMC0xNS40OTEsMC0yMy4xOTFWMTQzLjk0MXoiIGZpbGw9IiMwMDAwMDAiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K"
      :on-click #(do

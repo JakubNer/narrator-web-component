@@ -24,6 +24,25 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
+    position: relative;
+  }
+
+  .narrator-buttons-progress {
+    position: absolute;
+    width: 8em;
+    height: 5px;
+    top: -10px;
+    left: 0px;
+    background: linear-gradient(90deg, #FFFFFF 0%, #D0D0D0 10%, #D0D0D0 90%, #FFFFFF 100%);
+  }
+
+  @keyframes narration-progress {
+    0%   {
+      left: 0%;
+    }
+    100% {
+      left: calc(100% - 8em);
+    }
   }
 
   .narrator-button {
@@ -88,17 +107,18 @@
     -o-transition: font-size .5s ease-in-out, line-height .5s ease-in-out;
     transition: font-size .5s ease-in-out, line-height .5s ease-in-out;
     width: 95%;
-    margin-top: " font-max ";
+    font-size: " font-max ";
+    margin-top: 1em;
   }
 
   .narrator-section.narrator-current {
     font-size: " font-max ";
-    line-height: " font-max ";
+    line-height: 1em;
   }
 
   .narrator-section:not(.narrator-current) {
     font-size: " font-min ";
-    line-height: " font-min ";
+    line-height: 1em;
   }
 
   .narrator-subsection-frame-expand {
@@ -290,5 +310,4 @@
   .narrator-flow.narrator-current {
     color: #000000;
   }
-
   "))
