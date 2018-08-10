@@ -19,11 +19,12 @@
   }
 
   .narrator-buttons {
-    height: 64px;
+    height: 74px;
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: flex-start;
     position: relative;
   }
 
@@ -207,7 +208,7 @@
     position: absolute;
     height: 64px;
     left: -48px;
-    top: 20%;
+    top: calc(50% - 32px);
     opacity: 0;
     cursor: default;
 
@@ -221,7 +222,7 @@
     position: absolute;
     height: 64px;
     right: -48px;
-    top: 20%;
+    top: calc(50% - 32px);
     opacity: 0;
     cursor: default;
 
