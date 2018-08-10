@@ -19,7 +19,7 @@
   }
 
   .narrator-buttons {
-    height: 32px;
+    height: 64px;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -29,26 +29,26 @@
 
   .narrator-buttons-progress {
     position: absolute;
-    width: 8em;
+    width: 0%;
     height: 5px;
-    top: -10px;
+    top: -15px;
     left: 0px;
-    background: linear-gradient(90deg, #FFFFFF 0%, #D0D0D0 10%, #D0D0D0 90%, #FFFFFF 100%);
+    background: #D0D0D0;
   }
 
   @keyframes narration-progress {
     0%   {
-      left: 0%;
+      width: 0%;
     }
     100% {
-      left: calc(100% - 8em);
+      width: 100%;
     }
   }
 
   .narrator-button {
-    height: 32px;
-    margin-left: 5px;
-    margin-right: 5px;
+    height: 64px;
+    margin-left: 20px;
+    margin-right: 20px;
     cursor: pointer;
   }
 
@@ -153,7 +153,7 @@
   }
 
   .narrator-sections:not(.narrating) .narrator-section.narrator-current.has-narrator-subsections:not(.narrating-in-subsection) .narrator-subsection-frame-expand {
-    max-height: 2em;
+    max-height: 64px;
     margin-top: 1em;
     margin-bottom: 1em;
   }
@@ -205,8 +205,9 @@
 
   .narrator-subsection-frame-left {
     position: absolute;
-    left: -.75em;
-    top: 40%;
+    height: 64px;
+    left: -48px;
+    top: 20%;
     opacity: 0;
     cursor: default;
 
@@ -218,8 +219,9 @@
 
   .narrator-subsection-frame-right {
     position: absolute;
-    right: -.75em;
-    top: 40%;
+    height: 64px;
+    right: -48px;
+    top: 20%;
     opacity: 0;
     cursor: default;
 

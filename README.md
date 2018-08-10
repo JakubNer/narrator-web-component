@@ -138,7 +138,7 @@ In the REPL source the test runner and run the tests:
 
 Icons by:
 
-* https://www.flaticon.com
+* see /licenses folder (https://www.flaticon.com)
 * Daniele De Santis: https://www.flaticon.com/authors/daniele-de-santis
 * Pixel Perfect: https://www.flaticon.com/authors/pixel-perfect
 * Smashicons: https://www.flaticon.com/authors/smashicons
