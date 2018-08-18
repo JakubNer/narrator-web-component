@@ -12,6 +12,7 @@
                                     :keyframe (r/atom nil)
                                     :current (r/atom nil)
                                     :timeout (r/atom nil)
+                                    :instance-id (gensym "narration-instance-")
                                     :id (r/atom (gensym ""))})))
 
 (defn has-attrs [this]
@@ -31,6 +32,9 @@
 
 (defn id [this]
   (:id (get @attrs this)))
+
+(defn instance-id [this]
+  (:instance-id (get @attrs this)))
 
 ;;
 ;; narration / timeline variables and utilities
@@ -142,25 +146,32 @@
     (aset event "playing" (playing? this))
     (.dispatchEvent this event)))
 
-(defn start-progress-bar [seconds]
-  (let [progress-parent (dom/sel1 (str ".narrator-buttons"))
-        progress-bar (dom/sel1 (str ".narrator-buttons-progress"))
+(defn start-progress-bar [this seconds]
+  (.log js/console "start-progress-bar")
+  (let [progress-parent (dom/sel1 (str "#narrator-buttons-" (instance-id this)))
+        progress-bar (dom/sel1 (str "#narrator-buttons-progress" (instance-id this)))
         new-progress-bar (dom/create-element :div)]
+    (when progress-bar
+      (.log js/console "start-progress-bar remove old")
+      (dom/remove! progress-bar))
+    (.log js/console (str "start-progress-bar progress-parent:" progress-parent "progress-bar:" progress-bar "id:" (instance-id this) "new-progress-bar:" new-progress-bar))
     (dom/add-class! new-progress-bar (str "narrator-buttons-progress"))
     (dom/set-style! new-progress-bar :display "block")
     (dom/set-style! new-progress-bar :animation (str "narration-progress " seconds "s linear"))
     (dom/append! progress-parent new-progress-bar)
-    (when progress-bar
-      (dom/remove! progress-bar))))
+    (dom/set-attr! new-progress-bar :id (str "narrator-buttons-progress" (instance-id this)))))
 
-(defn stop-progress-bar []
-  (let [progress-bar (dom/sel1 (str ".narrator-buttons-progress"))]
+
+(defn stop-progress-bar [this]
+  (.log js/console "stop-progress-bar")
+  (let [progress-bar (dom/sel1 (str "#narrator-buttons-progress" (instance-id this)))]
     (when progress-bar
+      (.log js/console (str "stop-progress-bar remove old id:" (instance-id this)))
       (dom/remove! progress-bar))))
 
 (defn stop-playing [this]
   (when (playing? this)
-    (stop-progress-bar)
+    (stop-progress-bar this)
     (js/clearTimeout @(timeout this))
     (reset! (timeout this) nil)
     (add-remove-classes-and-properties-for-animation this)))
@@ -190,7 +201,7 @@
   (stop-playing this)
   (let [seconds (:seconds (:flow (nth @(narration this) @(keyframe this))))
         millis (* 1000 seconds)]
-    (start-progress-bar seconds)
+    (start-progress-bar this seconds)
     (reset! (timeout this) (js/setTimeout #(do
                                              (when (playing? this)
                                                (set-keyframe this (+ 1 @(keyframe this)))
@@ -243,7 +254,7 @@
 ;;
 
 (defn render-buttons [this]
-  [:div.narrator-buttons
+  [:div.narrator-buttons {:id (str "narrator-buttons-" (instance-id this))}
    [:img.narrator-button
     {:src "data:image/svg+xml;base64,
 PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNTEyIDUxMjsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIj48ZyB0cmFuc2Zvcm09Im1hdHJpeCgtMSAwIDAgMSA1MTIgMCkiPjxnPgoJPGc+CgkJPGc+CgkJCTxwYXRoIGQ9Ik0yMDYuNTkzLDE5Ni4zODRjLTEyLjQ4Ni0xNC41MzktMjUuNzQtMjguNTAzLTM5LjM3MS00MS45NzJjLTI3LjY3LTI3LjM0MS01Ny4xODgtNTIuNzQ5LTg3LjUtNzcuMTAyICAgICBDNjQuNzYsNjUuMjkxLDQ5Ljc4Miw1Mi42NjgsMzQuMDIsNDEuNzE4Yy03LjI3My01LjA1My0xNy4wNTktNy44OTYtMjQuODg4LTIuMzg1Yy04LjQ5OSw1Ljk4Mi02Ljk2NCwxNi41NjgtNi4xNTYsMjUuNTU2ICAgICBjMS45NzksMjIuMDQ1LDEuNzEyLDQ0LjQzLDIuMTEyLDY2LjU1NmMwLjI2NiwxNC42NCwwLjQ5OCwyOS4yNzksMC44MzYsNDMuOTE2Yy0xLjk1MSw1MC4wMjYtNC4xNDYsMTAwLjA0NC01LjE5OSwxNTAuMTA0ICAgICBjLTAuNDYzLDIyLjA0My0wLjc2Myw0NC4wNzktMC43MjEsNjYuMTI3YzAuMDIxLDExLjAyMSwwLjA5NiwyMi4wNDIsMC4yMzksMzMuMDYzYzAuMTI5LDkuOTIyLTAuMzQ2LDIwLjE0NCwwLjg2MywzMC4wMDQgICAgIGMxLjA1Nyw4LjYxMiw0Ljg2OCwxNi45NSwxMy42MywxOS45NzdjOS4zMDUsMy4yMTQsMTguNjM3LTEuNjU4LDI2LjM4My02LjU0OWMxNy4xOTUtMTAuODYsMzEuOTA4LTI1LjA3LDQ2LjYwNS0zOC45OTcgICAgIGMzMS42LTI5Ljk0Niw2Mi40NDMtNjAuNyw5My41LTkxLjIwN2MxNC44OTMtMTQuNjI4LDMxLjYyNi0yOC4wMzQsNDUuNDU2LTQzLjY2N2MxMi41MzItMTQuMTY3LDIwLjQ1OC0zMS41OTEsMTMuMzEyLTUwLjM4ICAgICBDMjMzLjIyLDIyNi4wMzMsMjE4Ljg0MywyMTAuNjQ3LDIwNi41OTMsMTk2LjM4NHogTTIxOS4xMjYsMjczLjM4MWMtMi4zMjYsMy4yODctNS4xMyw2LjM0OS03Ljg2Niw5LjI0MyAgICAgYy0zNS42ODYsMzcuNzIyLTcyLjIwNyw3NC42NTEtMTA5LjUzMSwxMTAuNzUzYy0xNS44OTEsMTUuMzctMzEuOTM0LDMwLjU5Ny00OC42NTUsNDUuMDU5ICAgICBjLTguNDc4LDcuMzMyLTE3LjM0LDE0LjU5MS0yNy44MjIsMTguNTU5Yy0xLjMyOCwwLjUwMi0yLjgxOSwwLjk0OS00LjEzNiwwLjQxNWMtMi4yMTctMC44OTktMi41NTUtMy44NDYtMi41NDUtNi4yMzkgICAgIGMwLjQ3Ni0xMTAuNzY1LDEuMTkzLTIyMS41MjgsMi4xNTMtMzMyLjI5YzAuMTc1LTIwLjE3NCwwLjkzNy00MC4zNDEsMS41NTgtNjAuNTA0YzAuMDE2LTAuNTE3LDAuMDgtMS4xMiwwLjUyMS0xLjM4OSAgICAgYzAuNDg5LTAuMjk4LDEuMTExLDAuMDA4LDEuNTk0LDAuMzE3YzIuNzUzLDEuNzY2LDUuMzM4LDMuNzc5LDcuOTE4LDUuNzg5YzY2LjkzNSw1Mi4xNDEsMTM4LjExNSwxMDMuNTcsMTg0Ljc0LDE3NS45NzEgICAgIGMzLjkwNCw2LjA2Myw3LjczNywxMi43MDYsNy41NDcsMTkuOTE1QzIyNC40NjEsMjY0LjI2MiwyMjIuMjE0LDI2OS4wMTksMjE5LjEyNiwyNzMuMzgxeiIgZGF0YS1vcmlnaW5hbD0iIzAwMDAwMCIgY2xhc3M9ImFjdGl2ZS1wYXRoIj48L3BhdGg+CgkJCTxwYXRoIGQ9Ik01MDkuMjk5LDI0My44MzZjLTYuNzcyLTE3LjgwNC0yMS4xNDktMzMuMTktMzMuMzk5LTQ3LjQ1M2MtMTIuNDg3LTE0LjUzOS0yNS43NC0yOC41MDMtMzkuMzcxLTQxLjk3MiAgICAgYy0yNy42Ny0yNy4zNDEtNTcuMTg4LTUyLjc0OS04Ny41LTc3LjEwMmMtMTQuOTYxLTEyLjAxOS0yOS45MzktMjQuNjQzLTQ1LjcwMi0zNS41OTJjLTcuMjc0LTUuMDUzLTE3LjA1OS03Ljg5Ni0yNC44ODktMi4zODUgICAgIGMtOC40OTgsNS45ODItNi45NjMsMTYuNTY4LTYuMTU1LDI1LjU1NmMxLjk3OSwyMi4wNDUsMS43MTIsNDQuNDMsMi4xMTIsNjYuNTU2YzAuMjY1LDE0LjY0LDAuNDk4LDI5LjI3OSwwLjgzNiw0My45MTYgICAgIGMtMS45NTEsNTAuMDI2LTQuMTQ2LDEwMC4wNDQtNS4xOTksMTUwLjEwNGMtMC40NjMsMjIuMDQzLTAuNzYzLDQ0LjA3OS0wLjcyMSw2Ni4xMjdjMC4wMjEsMTEuMDIxLDAuMDk2LDIyLjA0MiwwLjIzOSwzMy4wNjMgICAgIGMwLjEzLDkuOTIyLTAuMzQ2LDIwLjE0NCwwLjg2MywzMC4wMDRjMS4wNTcsOC42MTIsNC44NjgsMTYuOTUsMTMuNjI5LDE5Ljk3N2M5LjMwNiwzLjIxNCwxOC42MzgtMS42NTgsMjYuMzgzLTYuNTQ5ICAgICBjMTcuMTk2LTEwLjg2LDMxLjkwOS0yNS4wNyw0Ni42MDYtMzguOTk3YzMxLjYtMjkuOTQ2LDYyLjQ0My02MC43LDkzLjUtOTEuMjA3YzE0Ljg5My0xNC42MjgsMzEuNjI2LTI4LjAzNCw0NS40NTYtNDMuNjY3ICAgICBDNTA4LjUxOSwyODAuMDUsNTE2LjQ0NSwyNjIuNjI1LDUwOS4yOTksMjQzLjgzNnogTTQ5My40ODIsMjYyLjg2OGMtMC43MjQsMy44OTgtMi41OSw3LjM3My00Ljk0NywxMC41ODcgICAgIGMtMS45NjgsMi42ODUtNC4yNzgsNS4xODgtNi41NDcsNy42Yy00Ny4zNzMsNTAuMzc0LTk2LjQyNSw5OS4xNjktMTQ3LjA0NiwxNDYuMjc5Yy0xMS44MDcsMTAuOTg4LTIzLjkzMSwyMi4wNDQtMzguNDczLDI5LjAyMyAgICAgYy0yLjE3OSwxLjA0Ni00Ljk2NCwxLjkzNS02LjgzOSwwLjQxYy0xLjUzNS0xLjI1LTEuNjU3LTMuNTEtMS42NTMtNS40OWMwLjIzMS0xMTAuODY4LDAuOTcyLTIyMS43MzUsMi4yMjItMzMyLjU5NyAgICAgYzAuMTI1LTExLjA4NiwwLjI1NS0yMi4xNzIsMC4zOTEtMzMuMjU4YzAuMTAyLTguMzg2LTIuMDc4LTIwLjgwMiwxLjY4NC0yOC4zOTRjMS40MjgsMC4yMDYsNy42MDQsMi43MTEsNy42MDQsNC41NzQgICAgIGMyLjIxNCwxLjc5MSw0LjMyOCwzLjcyNiw2LjU5Miw1LjQ1NWM3LjA1OSw1LjM5MywxNC4xMDksMTAuNzk0LDIxLjEyOSwxNi4yMzdjNTcuODAyLDQ0LjgyNSwxMTcuMjA1LDkyLjAwNywxNTcuNjI0LDE1My45MzEgICAgIEM0OTAuMjU4LDI0NC45MzksNDk1LjE1OSwyNTMuODA5LDQ5My40ODIsMjYyLjg2OHoiIGRhdGEtb3JpZ2luYWw9IiMwMDAwMDAiIGNsYXNzPSJhY3RpdmUtcGF0aCI+PC9wYXRoPgoJCTwvZz4KCTwvZz4KPC9nPjwvZz4gPC9zdmc+"
