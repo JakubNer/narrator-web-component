@@ -291,6 +291,9 @@
     position: relative;
     display: inline-block;
     width: 100%;
+    padding-top: .75em;
+    padding-bottom: .75em;
+
 
     -webkit-transition: opacity .25s ease-out;
     -moz-transition: opacity .25s ease-out;
