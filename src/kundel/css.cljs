@@ -126,56 +126,7 @@
     line-height: 1em;
   }
 
-  .narrator-subsection-frame-expand {
-    max-height: 0px;
-    -webkit-transition: all .25s ease-out;
-    -moz-transition: all .25s ease-out;
-    -o-transition: all .25s ease-out;
-    transition: all .25s ease-out;
-
-    display: flex;
-    width: 2em;
-    margin-left: 40%;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    cursor: pointer;
-  }
-
-  .narrator-subsection-frame-expand img {
-    margin-right: .25em;
-  }
-
-  .narrator-sections:not(.narrating) .narrator-section.narrator-current:not(.has-narrator-subsections) .narrator-subsection-frame-expand {
-    max-height: 0px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-
-  .narrator-sections:not(.narrating) .narrator-section.narrator-current.narrating-in-subsection .narrator-subsection-frame-expand {
-    max-height: 0px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-
-  .narrator-sections:not(.narrating) .narrator-section.narrator-current.has-narrator-subsections:not(.narrating-in-subsection) .narrator-subsection-frame-expand {
-    max-height: 64px;
-    margin-top: 1em;
-    margin-bottom: 1em;
-  }
-
-  .narrator-sections.narrating .narrator-subsection-frame-expand {
-    max-height: 0px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-
-  .narrator-sections:not(.narrating) .narrator-section:not(.narrator-current) .narrator-subsection-frame-expand {
-    max-height: 0px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-
-  .narrator-subsection-frame:not(.narrator-current) .narrator-subsection-frame-hider {
+  .narrator-section:not(.narrator-current) .narrator-subsection-frame .narrator-subsection-frame-hider {
     pointer-events: none;
   }
 
@@ -200,11 +151,11 @@
     margin-bottom: .5em;
   }
 
-  .narrator-subsection-frame:not(.narrator-current) {
+  .narrator-section:not(.narrator-current) .narrator-subsection-frame {
     max-height: 0px;
   }
 
-  .narrator-subsection-frame.narrator-current {
+  .narrator-section.narrator-current .narrator-subsection-frame {
     max-height: 500px;
   }
 
@@ -241,7 +192,7 @@
     opacity: 0;
   }
 
-  .narrator-subsection-frame:not(.narrator-current) .narrator-subsection-frame-left {
+  .narrator-section:not(.narrator-current) .narrator-subsection-frame-left {
     cursor: default;
     opacity: 0;
   }
@@ -251,7 +202,7 @@
     opacity: 0;
   }
 
-  .narrator-sections:not(.narrating) .narrator-subsection-frame.narrator-current.has-previous-subsection .narrator-subsection-frame-left {
+  .narrator-sections:not(.narrating) .narrator-section.narrator-current .narrator-subsection-frame.has-previous-subsection .narrator-subsection-frame-left {
     cursor: pointer;
     opacity: 1;
   }
@@ -261,7 +212,7 @@
     opacity: 0;
   }
 
-  .narrator-subsection-frame:not(.narrator-current) .narrator-subsection-frame-right {
+  .narrator-section:not(.narrator-current) .narrator-subsection-frame-right {
     cursor: default;
     opacity: 0;
   }
@@ -271,7 +222,7 @@
     opacity: 0;
   }
 
-  .narrator-sections:not(.narrating) .narrator-subsection-frame.narrator-current.has-next-subsection .narrator-subsection-frame-right {
+  .narrator-sections:not(.narrating) .narrator-section.narrator-current .narrator-subsection-frame.has-next-subsection .narrator-subsection-frame-right {
     cursor: pointer;
     opacity: 1;
   }
@@ -301,11 +252,11 @@
     transition: opacity .25s ease-out;
   }
 
-  .narrator-subsection:not(.narrator-current) {
+  .narrator-section:not(.narrator-current) .narrator-subsection {
     opacity: 0;
   }
 
-  .narrator-subsection.narrator-current {
+  .narrator-section.narrator-current .narrator-subsection {
     opacity: 1
   }
 
