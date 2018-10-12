@@ -366,6 +366,7 @@ PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8v
       (do
         (reset! (get narrator-attrs "trigger") "trigger") false
         (js/setTimeout #(do
+                          (pause this)
                           (set-keyframe this 0)
                           (when (not paused) (play this)) 1000)))
       (if paused (when (playing? this) (pause this)) (when (not (playing? this)) (play this))))

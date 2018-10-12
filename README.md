@@ -58,7 +58,13 @@ Wile a subsection is being narrated both the section and sub-section are rendere
 
 #### paused
 
-Control trick play, "true" if narration should be paused, "false" if should be playing.
+Control trick play, "true" if narration should be paused, "false" if should be playing.  Only takes effect when re-triggering narration.
+
+To control trick play while narration occuring, do:
+
+```
+kundel.narrator.toggle-play-state(narrator);
+```
 
 #### trigger
 

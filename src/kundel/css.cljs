@@ -231,6 +231,7 @@
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
+    max-height: 500px;
 
     -webkit-transition: transform .25s ease-out;
     -moz-transition: transform .25s ease-out;
