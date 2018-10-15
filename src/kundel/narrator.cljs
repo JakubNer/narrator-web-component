@@ -2,8 +2,7 @@
   (:require
     [goog.object :as go]
     [reagent.core :as r]
-    [kundel.component :as c]
-    [debux.cs.core :refer-macros [clog dbg break]]))
+    [kundel.component :as c]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; w3c custom element registration and callback handlers.

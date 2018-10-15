@@ -1,7 +1,6 @@
 (ns kundel.component
   (:require
     [reagent.core :as r]
-    [debux.cs.core :refer-macros [clog dbg break]]
     [dommy.core :as dom]
     [kundel.css :as css]))
 

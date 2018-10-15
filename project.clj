@@ -2,7 +2,6 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.238"]
                  [reagent "0.8.0"]
-                 [philoskim/debux "0.4.1"]
                  [prismatic/dommy "1.1.0"]]
 
   :plugins [[lein-cljsbuild "1.1.7"]]
