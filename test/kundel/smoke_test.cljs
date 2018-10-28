@@ -1,7 +1,6 @@
 (ns kundel.smoke-test
   (:require [cljs.test :refer-macros [deftest is testing]]
-            [kundel.component :as s]
-            [debux.cs.core :refer-macros [clog dbg break]]))
+            [kundel.component :as s]))
 
 (deftest get-narration-basic
   (let [sections '({:flows (:a :b :c)
@@ -11,7 +10,6 @@
                    {:flows (:e :f :g)})]
     (testing "is a vanilla section setup creating the right narration"
       (let [result (s/get-narration sections)]
-        ;(clog result) ;; uncomment to visually inspect vanilla-result against vanilla-sections
         (is (= result
                '(
                  {:section
@@ -115,7 +113,6 @@
                    {:flows (:e)})]
     (testing "is a section setup without flows but with subsections OK?"
       (let [result (s/get-narration sections)]
-        ;(clog result) ;; uncomment to visually inspect vanilla-result against vanilla-sections
         (is (= result
                '({:section {:subsections ({:flows (:x)})},
                   :subsection {:flows (:x)},
@@ -132,7 +129,6 @@
   (let [sections '({:flows (:e)})]
     (testing "is a section setup with just one flow OK?"
       (let [result (s/get-narration sections)]
-        ;(clog result) ;; uncomment to visually inspect vanilla-result against vanilla-sections
         (is (= result
                '({:section {:flows (:e)},
                   :subsection nil,
@@ -144,7 +140,6 @@
   (let [sections '()]
     (testing "is a section setup with just one flow OK?"
       (let [result (s/get-narration sections)]
-        (clog result) ;; uncomment to visually inspect vanilla-result against vanilla-sections
         (is (= result
                nil))))))
 

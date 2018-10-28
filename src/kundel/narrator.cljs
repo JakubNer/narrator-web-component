@@ -89,3 +89,6 @@
 
 (defn ^:export toggle-play-state [this]
   (c/toggle-play-state this))
+
+(defn ^:export goto-section [this id]
+  (c/goto-section this id))

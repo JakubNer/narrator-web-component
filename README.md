@@ -88,6 +88,14 @@ Subsections that are not currently narrated are not visible.
 
 Font size to render the currently narrated section and subsection, if any.
 
+#### goto_section
+
+Go to a specific section (by 'id') and pause narration--method only:
+
+```
+kundel.narrator.goto_section(narrator,'nam')
+```
+
 ## Dev Run Application:
 
 ```

@@ -64,6 +64,10 @@
   "retrieves narration keyframe for flow."
   (first (keep-indexed #(when (= flow (:flow %2)) %1) narration)))
 
+(defn get-narration-keyframe-by-id [narration id]
+  "retrieves narration keyframe for flow."
+  (first (keep-indexed #(when (= id (:id (:flow %2))) %1) narration)))
+
 (defn get-subsection-index-percentage-tuple [narration flow]
   "Retrieve 0-based index of flow in subsection, if any, or nil.  Retrieve percentage of all subsections where subsection occurs, so 3rd subsection of 4 subsections is at 75%.  These two values are in a tuple (index, percentage)"
   (let [_keyframe (get-narration-keyframe narration flow)
@@ -249,6 +253,11 @@
     (set-keyframe this keyframe_of_flow)
     (when (playing? this) (pause this))))
 
+(defn selected-flow-by-id [this id]
+  (let [keyframe_of_flow (get-narration-keyframe-by-id @(narration this) id)]
+    (set-keyframe this keyframe_of_flow)
+    (when (playing? this) (pause this))))
+
 (defn goto-first-subsection [this]
   "Set keyframe at first subsection flow of current flow"
   (when-let [first-subsection-flow (first (:flows (first (:subsections (:section @(current this))))))]
@@ -352,6 +361,9 @@ PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8v
 (defn toggle-play-state [this]
   (if (playing? this) (pause this) (play this)))
 
+(defn goto-section [this id]
+  (selected-flow-by-id this id))
+
 (defn render [this narrator-attrs]
   (when (not (has-attrs this))
     (ctor-attrs this))
@@ -367,7 +379,7 @@ PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8v
         (js/setTimeout #(do
                           (pause this)
                           (set-keyframe this 0)
-                          (when (not paused) (play this)) 1000)))
+                          (when (not paused) (play this)) 0)))
       (if paused (when (playing? this) (pause this)) (when (not (playing? this)) (play this))))
     [:div {:style {:height "100%" :width "100%"}}
      [:style (css/get-styles font-min font-max @(id this))]
