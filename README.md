@@ -30,6 +30,8 @@ flows finish "narrating".
 
 Compnent registered as "narrator".
 
+(The [illustrator component](https://github.com/JakubNer/illustrator-web-component) is related to this one but without the play/pause functionality)
+
 ### Attributes
 
 #### sections
