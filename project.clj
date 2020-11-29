@@ -1,4 +1,4 @@
-(defproject clojurescript-w3c-custom-element  "0.0.1"
+(defproject clojurescript-w3c-custom-element  "0.0.2"
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.238"]
                  [reagent "0.8.0"]
