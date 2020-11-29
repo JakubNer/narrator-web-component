@@ -223,7 +223,8 @@
             narrator.setAttribute("font-size-min--section", "1vmin");
             narrator.setAttribute("font-size-max--section", "2.5vmin");
             kundel.narrator.created(narrator);
-            kundel.narrator.changed(narrator, "trigger", null, new Date().getTime());
+            kundel.narrator.goto_start(narrator);
+            kundel.narrator.toggle_play_state(narrator);
         </script>
     </body>
 </html>

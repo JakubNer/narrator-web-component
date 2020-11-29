@@ -92,3 +92,12 @@
 
 (defn ^:export goto-section [this id]
   (c/goto-section this id))
+
+(defn ^:export goto-start [this]
+  (c/goto-start this))
+
+(defn ^:export goto-next [this]
+  (c/goto-next this))
+
+(defn ^:export goto-previous [this]
+  (c/goto-previous this))

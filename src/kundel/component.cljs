@@ -279,6 +279,19 @@
     (when-let [subsection-keyframe (get-narration-keyframe @(narration this) subsection-flow)]
       (set-keyframe this subsection-keyframe))))
 
+(defn goto-start [this]
+  (set-keyframe this 0))
+
+(defn goto-next [this]
+  (if (>= (- (count @(narration this)) 1) (+ @(keyframe this) 1))
+    (set-keyframe this (+ @(keyframe this) 1))
+    (fire-event this "NEXT_AFTER_LAST")))
+
+(defn goto-previous [this]
+  (if (> 0 (- @(keyframe this) 1))
+    (fire-event this "PREVIOUS_BEFORE_FIRST")
+    (set-keyframe this (- @(keyframe this) 1))))
+
 ;;
 ;; Rendered components
 ;;
