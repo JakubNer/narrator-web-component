@@ -1,6 +1,6 @@
 .idea/
 min-reagent.iml
-resources/public/js/
+resources/public/js/out
 target/
 figwheel_server.log
 reagent-template.iml
