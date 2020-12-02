@@ -98,6 +98,10 @@ Subsections that are not currently narrated are not visible.
 
 Font size to render the currently narrated section and subsection, if any.
 
+#### next-hint
+
+Hint text for "Next Slide".
+
 #### goto_section
 
 Go to a specific section (by 'id') and pause narration--method only:

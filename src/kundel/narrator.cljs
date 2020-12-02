@@ -30,6 +30,7 @@
 (defn ctor-attrs []
   {"sections" (atom nil)
    "paused" (atom nil)
+   "next-hint" (atom nil)
    "trigger" (r/atom nil) ;; just change this in some fashion to trigger, update as timestamp?
    "font-size-min--section" (atom nil)
    "font-size-max--section" (atom nil)})
@@ -42,6 +43,7 @@
 ;;    #(= "true" (str %2))        ;; parses boolean
 ;; This list's keys must match the 'attrs' list.
 (def fns {"sections" #(js->clj (.parse js/JSON %2) :keywordize-keys true)
+          "next-hint" #(if %2 (str %2) nil)
           "paused" #(= "true" (str %2))
           "trigger" #(identity true)
           "font-size-min--section" #(do %2)

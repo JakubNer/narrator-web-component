@@ -28,21 +28,18 @@
     position: relative;
   }
 
-  .narrator-buttons-progress {
-    position: absolute;
-    width: 0%;
-    height: 5px;
-    top: -15px;
-    left: 0px;
-    background: #D0D0D0;
-  }
-
   @keyframes narration-progress {
     0%   {
-      width: 0%;
+      -webkit-transform: rotate(0deg); ;
+      -moz-transform: rotate(0deg); ;
+      -o-transform: rotate(0deg); ;
+      transform: rotate(0deg); ;
     }
     100% {
-      width: 100%;
+      -webkit-transform: rotate(360deg); ;
+      -moz-transform: rotate(360deg); ;
+      -o-transform: rotate(360deg); ;
+      transform: rotate(360deg); ;
     }
   }
 
