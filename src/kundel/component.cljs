@@ -112,8 +112,17 @@
 (defn playing? [this]
   (not (nil? @(timeout this))))
 
-(defn scroll-into-view [js-element]
-  (js/setTimeout #(.scrollIntoView js-element (js-obj "block" "center" "inline" "center" "behavior" "smooth")) 150))
+(defn scroll-into-view [js-container js-element]
+  (js/setTimeout 
+    #(let [container-top (. js-container -offsetTop)
+           element-top (. js-element -offsetTop)
+           container-height (. js-container -offsetHeight)
+           element-height (. js-element -offsetHeight)
+           offset (/ (- container-height element-height) 2)
+           within? (> container-height element-height)]
+      (if within? 
+        (aset js-container "scrollTop" (max 0 (- element-top offset)))
+        (aset js-container "scrollTop" element-top))) 150))
 
 (defn assign-scrollbar [narrator-sections]
   (if (> (js/parseInt (. (. js/window getComputedStyle narrator-sections) -marginTop)) 20)
@@ -171,7 +180,7 @@
         (when-let [subsection-frame-js-child (find-child-with-class section-js-element "narrator-subsection-frame")]
           (when (> (:numsubs @(current this)) 1)
             (dom/add-class! subsection-frame-js-child "has-next-subsection"))))
-      (scroll-into-view section-js-element))
+      (scroll-into-view sections-js-element section-js-element))
     (assign-scrollbar sections-js-element)))
 
 (defn fire-event [this id]
