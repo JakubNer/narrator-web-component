@@ -113,7 +113,12 @@
   (not (nil? @(timeout this))))
 
 (defn scroll-into-view [js-element]
-  (js/setTimeout #((.scrollIntoView js-element (js-obj "block" "center" "inline" "center" "behavior" "smooth"))) 150))
+  (js/setTimeout #(.scrollIntoView js-element (js-obj "block" "center" "inline" "center" "behavior" "smooth")) 150))
+
+(defn assign-scrollbar [narrator-sections]
+  (if (> (js/parseInt (. (. js/window getComputedStyle narrator-sections) -marginTop)) 20)
+    (dom/set-style! narrator-sections :overflow-y "hidden")
+    (dom/set-style! narrator-sections :overflow-y "auto")))
 
 (defn add-remove-classes-and-properties-for-animation [this]
   "go through all IDs and animate as required"
@@ -166,7 +171,8 @@
         (when-let [subsection-frame-js-child (find-child-with-class section-js-element "narrator-subsection-frame")]
           (when (> (:numsubs @(current this)) 1)
             (dom/add-class! subsection-frame-js-child "has-next-subsection"))))
-      (scroll-into-view section-js-element))))
+      (scroll-into-view section-js-element))
+    (assign-scrollbar sections-js-element)))
 
 (defn fire-event [this id]
   "Dispatch 'timeline' events."

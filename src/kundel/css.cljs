@@ -6,15 +6,17 @@
   .narrator-frame {
     height: 100%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   .narrator-sections {
-    height: calc(100% - 94px);
+    max-height: calc(100% - 94px);
     width: 100%;
-    justify-content: center;
-    overflow: hidden;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    margin-top: auto;
+    margin-bottom: 20px;
   }
 
   .narrator-buttons {
