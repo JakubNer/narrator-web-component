@@ -20,7 +20,7 @@
             left: 0%;
             top: 0%;
             margin: 2%;
-            height: 96%;
+            height: 90%;
             width: 46%;
         }
 
@@ -29,7 +29,7 @@
             left: 50%;
             top: 0%;
             margin: 2%;
-            height: 96%;
+            height: 90%;
             width: 46%;
         }
     </style>
@@ -51,6 +51,15 @@
             // Number of pairs is the number of pages.
             my_sections =
                 [
+                  {
+                      "flows":[
+                         {
+                            "html":"Nam ut elementum libero. Aliquam aliquet vehicula cursus. Suspendisse id mauris quis leo scelerisque pharetra sed non orci. Vivamus pharetra, felis eget ultricies consectetur, sem est aliquet ipsum, placerat auctor nisi orci id turpis. Integer vestibulum ligula at tristique dignissim. Curabitur hendrerit, turpis id gravida pulvinar, ipsum felis ultricies est, quis efficitur enim risus ac arcu. Maecenas dapibus in ante nec viverra. Ut ac massa vitae diam dignissim blandit.",
+                            "seconds":3,
+                            "id":"nam"
+                         }
+                      ]
+                   },
                    {
                       "flows":[
                          {
@@ -106,15 +115,6 @@
                                   "id":"sed"
                                }
                             ]
-                         }
-                      ]
-                   },
-                   {
-                      "flows":[
-                         {
-                            "html":"Nam ut elementum libero. Aliquam aliquet vehicula cursus. Suspendisse id mauris quis leo scelerisque pharetra sed non orci. Vivamus pharetra, felis eget ultricies consectetur, sem est aliquet ipsum, placerat auctor nisi orci id turpis. Integer vestibulum ligula at tristique dignissim. Curabitur hendrerit, turpis id gravida pulvinar, ipsum felis ultricies est, quis efficitur enim risus ac arcu. Maecenas dapibus in ante nec viverra. Ut ac massa vitae diam dignissim blandit.",
-                            "seconds":3,
-                            "id":"nam"
                          }
                       ]
                    },
@@ -220,8 +220,8 @@
 
             narrator.setAttribute("sections", JSON.stringify(my_sections));
             narrator.setAttribute("paused", "true");
-            narrator.setAttribute("font-size-min--section", "1vmin");
-            narrator.setAttribute("font-size-max--section", "2.5vmin");
+            narrator.setAttribute("font-size-min--section", "3vmin");
+            narrator.setAttribute("font-size-max--section", "4vmin");
             narrator.setAttribute("next-hint", "press spacebar or arrow keys");
             kundel.narrator.created(narrator);
             kundel.narrator.goto_start(narrator);

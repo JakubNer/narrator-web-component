@@ -112,6 +112,9 @@
 (defn playing? [this]
   (not (nil? @(timeout this))))
 
+(defn scroll-into-view [js-element]
+  (js/setTimeout #((.scrollIntoView js-element (js-obj "block" "center" "inline" "center" "behavior" "smooth"))) 150))
+
 (defn add-remove-classes-and-properties-for-animation [this]
   "go through all IDs and animate as required"
   (let [current-flow (:flow @(current this))
@@ -162,7 +165,8 @@
           (dom/remove-class! section-js-element "narrating-in-subsection"))
         (when-let [subsection-frame-js-child (find-child-with-class section-js-element "narrator-subsection-frame")]
           (when (> (:numsubs @(current this)) 1)
-            (dom/add-class! subsection-frame-js-child "has-next-subsection")))))))
+            (dom/add-class! subsection-frame-js-child "has-next-subsection"))))
+      (scroll-into-view section-js-element))))
 
 (defn fire-event [this id]
   "Dispatch 'timeline' events."

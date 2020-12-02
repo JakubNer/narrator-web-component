@@ -6,16 +6,15 @@
   .narrator-frame {
     height: 100%;
     width: 100%;
-    display: flex;
-    flex-direction: column;
   }
 
   .narrator-sections {
-    height: calc(100% - 32px);
+    height: calc(100% - 94px);
     width: 100%;
-    display: flex;
-    flex-direction: column;
     justify-content: center;
+    overflow: hidden;
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 
   .narrator-buttons {
@@ -48,10 +47,10 @@
     margin-left: 20px;
     margin-right: 20px;
     cursor: pointer;
-    transition: max-height 0.25s ease-out, margin-left 0.25s ease-out, margin-right 0.25s ease-out;
-    -webkit-transition: max-height 0.25s ease-out, margin-left 0.25s ease-out, margin-right 0.25s ease-out;
-    -moz-transition: max-height 0.25s ease-out, margin-left 0.25s ease-out, margin-right 0.25s ease-out;
-    -o-transition: max-height 0.25s ease-out, margin-left 0.25s ease-out, margin-right 0.25s ease-out;
+    transition: max-height 0.1s ease-out, margin-left 0.1s ease-out, margin-right 0.1s ease-out;
+    -webkit-transition: max-height 0.1s ease-out, margin-left 0.1s ease-out, margin-right 0.1s ease-out;
+    -moz-transition: max-height 0.1s ease-out, margin-left 0.1s ease-out, margin-right 0.1s ease-out;
+    -o-transition: max-height 0.1s ease-out, margin-left 0.1s ease-out, margin-right 0.1s ease-out;
   }
 
   .narrator-sections-center {
@@ -104,10 +103,10 @@
   }
 
   .narrator-section {
-    -webkit-transition: font-size .25s ease-in-out, line-height .25s ease-in-out;
-    -moz-transition: font-size .25s ease-in-out, line-height .25s ease-in-out;
-    -o-transition: font-size .25s ease-in-out, line-height .25s ease-in-out;
-    transition: font-size .25s ease-in-out, line-height .25s ease-in-out;
+    -webkit-transition: font-size .1s ease-in-out, line-height .1s ease-in-out;
+    -moz-transition: font-size .1s ease-in-out, line-height .1s ease-in-out;
+    -o-transition: font-size .1s ease-in-out, line-height .1s ease-in-out;
+    transition: font-size .1s ease-in-out, line-height .1s ease-in-out;
     width: 95%;
     font-size: " font-max ";
     margin-top: 1em;
@@ -134,10 +133,10 @@
   .narrator-subsection-frame {
     position: relative;
     max-height: 0px;
-    -webkit-transition: max-height .25s ease-out;
-    -moz-transition: max-height .25s ease-out;
-    -o-transition: max-height .25s ease-out;
-    transition: max-height .25s ease-out;
+    -webkit-transition: max-height .1s ease-out;
+    -moz-transition: max-height .1s ease-out;
+    -o-transition: max-height .1s ease-out;
+    transition: max-height .1s ease-out;
 
     margin-right: 1em;
     margin-left: 1em;
@@ -164,10 +163,10 @@
     opacity: 0;
     cursor: default;
 
-    -webkit-transition: opacity .25s ease-out;
-    -moz-transition: opacity .25s ease-out;
-    -o-transition: opacity .25s ease-out;
-    transition: opacity .25s ease-out;
+    -webkit-transition: opacity .1s ease-out;
+    -moz-transition: opacity .1s ease-out;
+    -o-transition: opacity .1s ease-out;
+    transition: opacity .1s ease-out;
   }
 
   .narrator-subsection-frame-right {
@@ -178,10 +177,10 @@
     opacity: 0;
     cursor: default;
 
-    -webkit-transition: opacity .25s ease-out;
-    -moz-transition: opacity .25s ease-out;
-    -o-transition: opacity .25s ease-out;
-    transition: opacity .25s ease-out;
+    -webkit-transition: opacity .1s ease-out;
+    -moz-transition: opacity .1s ease-out;
+    -o-transition: opacity .1s ease-out;
+    transition: opacity .1s ease-out;
   }
 
   .narrator-sections.narrating .narrator-subsection-frame-left {
@@ -230,10 +229,10 @@
     align-items: center;
     max-height: 500px;
 
-    -webkit-transition: transform .25s ease-out;
-    -moz-transition: transform .25s ease-out;
-    -o-transition: transform .25s ease-out;
-    transition: transform .25s ease-out;
+    -webkit-transition: transform .1s ease-out;
+    -moz-transition: transform .1s ease-out;
+    -o-transition: transform .1s ease-out;
+    transition: transform .1s ease-out;
   }
 
   .narrator-subsection {
@@ -244,10 +243,10 @@
     padding-bottom: .75em;
 
 
-    -webkit-transition: opacity .25s ease-out;
-    -moz-transition: opacity .25s ease-out;
-    -o-transition: opacity .25s ease-out;
-    transition: opacity .25s ease-out;
+    -webkit-transition: opacity .1s ease-out;
+    -moz-transition: opacity .1s ease-out;
+    -o-transition: opacity .1s ease-out;
+    transition: opacity .1s ease-out;
   }
 
   .narrator-section:not(.narrator-current) .narrator-subsection {
