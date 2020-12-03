@@ -112,6 +112,9 @@
 (defn playing? [this]
   (not (nil? @(timeout this))))
 
+(defn need-scrollbar? [narrator-sections]
+  (<= (js/parseInt (. (. js/window getComputedStyle narrator-sections) -marginTop)) 20))
+
 (defn scroll-into-view [js-container js-element]
   (js/setTimeout 
     #(let [container-top (. js-container -offsetTop)
@@ -120,14 +123,15 @@
            element-height (. js-element -offsetHeight)
            offset (/ (- container-height element-height) 2)
            within? (> container-height element-height)]
-      (if within? 
-        (aset js-container "scrollTop" (max 0 (- element-top offset)))
-        (aset js-container "scrollTop" element-top))) 150))
+      (when (need-scrollbar? js-container)
+        (if within? 
+          (aset js-container "scrollTop" (max 0 (- element-top offset)))
+          (aset js-container "scrollTop" element-top))) 150)))
 
 (defn assign-scrollbar [narrator-sections]
-  (if (> (js/parseInt (. (. js/window getComputedStyle narrator-sections) -marginTop)) 20)
-    (dom/set-style! narrator-sections :overflow-y "hidden")
-    (dom/set-style! narrator-sections :overflow-y "auto")))
+  (if (need-scrollbar? narrator-sections)
+    (dom/set-style! narrator-sections :overflow-y "auto")
+    (dom/set-style! narrator-sections :overflow-y "hidden")))
 
 (defn add-remove-classes-and-properties-for-animation [this]
   "go through all IDs and animate as required"
