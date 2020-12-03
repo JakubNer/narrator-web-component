@@ -16,7 +16,7 @@
     overflow-y: hidden;
     overflow-x: hidden;
     margin-top: auto;
-    margin-bottom: 20px;
+    margin-bottom: auto;
   }
 
   .narrator-buttons {
