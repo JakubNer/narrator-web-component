@@ -112,11 +112,16 @@
     width: 95%;
     font-size: " font-max ";
     margin-top: 1em;
+    padding-left: .5em;
+    padding-right: .5em;
   }
 
   .narrator-section.narrator-current {
     font-size: " font-max ";
     line-height: 1em;
+    border-left: solid 2px;
+    border-right: solid 2px;
+    border-color: #DDDDDD
   }
 
   .narrator-section:not(.narrator-current) {
@@ -160,7 +165,7 @@
   .narrator-subsection-frame-left {
     position: absolute;
     height: 64px;
-    left: -44px;
+    left: -40px;
     top: calc(50% - 32px);
     opacity: 0;
     cursor: default;
@@ -174,7 +179,7 @@
   .narrator-subsection-frame-right {
     position: absolute;
     height: 64px;
-    right: -44px;
+    right: -40px;
     top: calc(50% - 32px);
     opacity: 0;
     cursor: default;
