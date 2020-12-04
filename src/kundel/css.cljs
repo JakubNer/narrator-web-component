@@ -49,10 +49,10 @@
     margin-left: 20px;
     margin-right: 20px;
     cursor: pointer;
-    transition: max-height 0.1s ease-out, margin-left 0.1s ease-out, margin-right 0.1s ease-out;
-    -webkit-transition: max-height 0.1s ease-out, margin-left 0.1s ease-out, margin-right 0.1s ease-out;
-    -moz-transition: max-height 0.1s ease-out, margin-left 0.1s ease-out, margin-right 0.1s ease-out;
-    -o-transition: max-height 0.1s ease-out, margin-left 0.1s ease-out, margin-right 0.1s ease-out;
+    transition: max-height 0.25s ease-out, margin-left 0.25s ease-out, margin-right 0.25s ease-out;
+    -webkit-transition: max-height 0.25s ease-out, margin-left 0.25s ease-out, margin-right 0.25s ease-out;
+    -moz-transition: max-height 0.25s ease-out, margin-left 0.25s ease-out, margin-right 0.25s ease-out;
+    -o-transition: max-height 0.25s ease-out, margin-left 0.25s ease-out, margin-right 0.25s ease-out;
   }
 
   .narrator-sections-center {
