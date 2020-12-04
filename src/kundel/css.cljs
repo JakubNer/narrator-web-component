@@ -160,7 +160,7 @@
   .narrator-subsection-frame-left {
     position: absolute;
     height: 64px;
-    left: -48px;
+    left: -44px;
     top: calc(50% - 32px);
     opacity: 0;
     cursor: default;
@@ -174,7 +174,7 @@
   .narrator-subsection-frame-right {
     position: absolute;
     height: 64px;
-    right: -48px;
+    right: -44px;
     top: calc(50% - 32px);
     opacity: 0;
     cursor: default;
