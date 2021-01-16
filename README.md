@@ -40,7 +40,7 @@ JSON:
 
 ```
 [{"flows":[{"html":"",
-            "seconds":0,
+            "seconds":1,
             "id":""}],
   "subsections":[{"flows":[]}]}]
 ```
@@ -50,6 +50,8 @@ Each record in list defines a section.  Each section is narrated in order.
 A section can have a list of "flows".  Each flow is narrated in order when section is being narrated.  The time
 of narrating a section in seconds is defined by "seconds" attribute.  The HTML to render for a flow is defined by "html".
 The "id" attribute is the "id" provided to "timeline" event triggered when flow starts narrating.
+
+> Note, a 0 "seconds" value is special and signals to skip the section to the next immediately upon selection: useful for heading etc.
 
 A section can have subsections to be narrated after all flows for a section--if any--finish narrating.  Subsection flows
 are identical to section flows.

@@ -228,7 +228,9 @@
       (reset! (current this) (nth @(narration this) new-keyframe))
       (fire-event this (:id (:flow @(current this))))
       (start-replay this)))
-  (add-remove-classes-and-properties-for-animation this))
+  (add-remove-classes-and-properties-for-animation this)
+  (when (= 0 (:seconds (:flow @(current this))))
+    (set-keyframe this (+ 1 @(keyframe this)))))
 
 (defn start-playing [this]
   (stop-playing this)
