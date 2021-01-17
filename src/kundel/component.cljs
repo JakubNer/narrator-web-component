@@ -126,7 +126,7 @@
       (when (need-scrollbar? js-container)
         (if within? 
           (aset js-container "scrollTop" (max 0 (- element-top offset)))
-          (aset js-container "scrollTop" element-top))) 150)))
+          (aset js-container "scrollTop" element-top)))) 150))
 
 (defn assign-scrollbar [narrator-sections]
   (if (need-scrollbar? narrator-sections)
